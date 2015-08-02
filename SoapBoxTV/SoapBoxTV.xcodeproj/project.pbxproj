@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		6DA859041B6E69C60047D2A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859031B6E69C60047D2A3 /* main.m */; };
 		6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859061B6E69C60047D2A3 /* AppDelegate.m */; };
-		6DA8590A1B6E69C60047D2A3 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859091B6E69C60047D2A3 /* LoginViewController.m */; };
 		6DA8590D1B6E69C60047D2A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8590B1B6E69C60047D2A3 /* Main.storyboard */; };
 		6DA8590F1B6E69C60047D2A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8590E1B6E69C60047D2A3 /* Images.xcassets */; };
 		6DA859121B6E69C60047D2A3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DA859101B6E69C60047D2A3 /* LaunchScreen.xib */; };
 		6DA8591E1B6E69C60047D2A3 /* SoapBoxTVTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA8591D1B6E69C60047D2A3 /* SoapBoxTVTests.m */; };
+		6DA8592E1B6E6BCF0047D2A3 /* Lobby in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8592B1B6E6BCF0047D2A3 /* Lobby */; };
+		6DA8592F1B6E6BCF0047D2A3 /* Login in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8592C1B6E6BCF0047D2A3 /* Login */; };
+		6DA859341B6E6C0A0047D2A3 /* Event in Resources */ = {isa = PBXBuildFile; fileRef = 6DA859331B6E6C0A0047D2A3 /* Event */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,14 +34,15 @@
 		6DA859031B6E69C60047D2A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6DA859051B6E69C60047D2A3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6DA859061B6E69C60047D2A3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		6DA859081B6E69C60047D2A3 /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
-		6DA859091B6E69C60047D2A3 /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		6DA8590C1B6E69C60047D2A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6DA8590E1B6E69C60047D2A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6DA859111B6E69C60047D2A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		6DA859171B6E69C60047D2A3 /* SoapBoxTVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SoapBoxTVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA8591C1B6E69C60047D2A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA8591D1B6E69C60047D2A3 /* SoapBoxTVTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SoapBoxTVTests.m; sourceTree = "<group>"; };
+		6DA8592B1B6E6BCF0047D2A3 /* Lobby */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Lobby; sourceTree = "<group>"; };
+		6DA8592C1B6E6BCF0047D2A3 /* Login */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Login; sourceTree = "<group>"; };
+		6DA859331B6E6C0A0047D2A3 /* Event */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Event; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,10 +84,11 @@
 		6DA859001B6E69C50047D2A3 /* SoapBoxTV */ = {
 			isa = PBXGroup;
 			children = (
+				6DA859331B6E6C0A0047D2A3 /* Event */,
+				6DA8592B1B6E6BCF0047D2A3 /* Lobby */,
+				6DA8592C1B6E6BCF0047D2A3 /* Login */,
 				6DA859051B6E69C60047D2A3 /* AppDelegate.h */,
 				6DA859061B6E69C60047D2A3 /* AppDelegate.m */,
-				6DA859081B6E69C60047D2A3 /* LoginViewController.h */,
-				6DA859091B6E69C60047D2A3 /* LoginViewController.m */,
 				6DA8590B1B6E69C60047D2A3 /* Main.storyboard */,
 				6DA8590E1B6E69C60047D2A3 /* Images.xcassets */,
 				6DA859101B6E69C60047D2A3 /* LaunchScreen.xib */,
@@ -199,9 +203,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DA8592F1B6E6BCF0047D2A3 /* Login in Resources */,
 				6DA8590D1B6E69C60047D2A3 /* Main.storyboard in Resources */,
 				6DA859121B6E69C60047D2A3 /* LaunchScreen.xib in Resources */,
+				6DA859341B6E6C0A0047D2A3 /* Event in Resources */,
 				6DA8590F1B6E69C60047D2A3 /* Images.xcassets in Resources */,
+				6DA8592E1B6E6BCF0047D2A3 /* Lobby in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +226,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6DA8590A1B6E69C60047D2A3 /* LoginViewController.m in Sources */,
 				6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */,
 				6DA859041B6E69C60047D2A3 /* main.m in Sources */,
 			);
