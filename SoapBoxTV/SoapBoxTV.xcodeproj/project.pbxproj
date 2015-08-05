@@ -13,9 +13,9 @@
 		6DA8590F1B6E69C60047D2A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8590E1B6E69C60047D2A3 /* Images.xcassets */; };
 		6DA859121B6E69C60047D2A3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DA859101B6E69C60047D2A3 /* LaunchScreen.xib */; };
 		6DA8591E1B6E69C60047D2A3 /* SoapBoxTVTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA8591D1B6E69C60047D2A3 /* SoapBoxTVTests.m */; };
-		6DA8592E1B6E6BCF0047D2A3 /* Lobby in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8592B1B6E6BCF0047D2A3 /* Lobby */; };
-		6DA8592F1B6E6BCF0047D2A3 /* Login in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8592C1B6E6BCF0047D2A3 /* Login */; };
-		6DA859341B6E6C0A0047D2A3 /* Event in Resources */ = {isa = PBXBuildFile; fileRef = 6DA859331B6E6C0A0047D2A3 /* Event */; };
+		6DED7FC51B71CC990008C4D3 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FC41B71CC990008C4D3 /* EventViewController.m */; };
+		6DED7FCC1B71CCB60008C4D3 /* LobbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FC81B71CCB60008C4D3 /* LobbyViewController.m */; };
+		6DED7FCD1B71CCB60008C4D3 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FCB1B71CCB60008C4D3 /* LoginViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,9 +40,12 @@
 		6DA859171B6E69C60047D2A3 /* SoapBoxTVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SoapBoxTVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA8591C1B6E69C60047D2A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA8591D1B6E69C60047D2A3 /* SoapBoxTVTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SoapBoxTVTests.m; sourceTree = "<group>"; };
-		6DA8592B1B6E6BCF0047D2A3 /* Lobby */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Lobby; sourceTree = "<group>"; };
-		6DA8592C1B6E6BCF0047D2A3 /* Login */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Login; sourceTree = "<group>"; };
-		6DA859331B6E6C0A0047D2A3 /* Event */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Event; sourceTree = "<group>"; };
+		6DED7FC31B71CC990008C4D3 /* EventViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventViewController.h; sourceTree = "<group>"; };
+		6DED7FC41B71CC990008C4D3 /* EventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventViewController.m; sourceTree = "<group>"; };
+		6DED7FC71B71CCB60008C4D3 /* LobbyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LobbyViewController.h; sourceTree = "<group>"; };
+		6DED7FC81B71CCB60008C4D3 /* LobbyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LobbyViewController.m; sourceTree = "<group>"; };
+		6DED7FCA1B71CCB60008C4D3 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		6DED7FCB1B71CCB60008C4D3 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,9 +87,9 @@
 		6DA859001B6E69C50047D2A3 /* SoapBoxTV */ = {
 			isa = PBXGroup;
 			children = (
-				6DA859331B6E6C0A0047D2A3 /* Event */,
-				6DA8592B1B6E6BCF0047D2A3 /* Lobby */,
-				6DA8592C1B6E6BCF0047D2A3 /* Login */,
+				6DED7FC61B71CCB60008C4D3 /* Lobby */,
+				6DED7FC91B71CCB60008C4D3 /* Login */,
+				6DED7FC21B71CC990008C4D3 /* Event */,
 				6DA859051B6E69C60047D2A3 /* AppDelegate.h */,
 				6DA859061B6E69C60047D2A3 /* AppDelegate.m */,
 				6DA8590B1B6E69C60047D2A3 /* Main.storyboard */,
@@ -121,6 +124,33 @@
 				6DA8591C1B6E69C60047D2A3 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6DED7FC21B71CC990008C4D3 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				6DED7FC31B71CC990008C4D3 /* EventViewController.h */,
+				6DED7FC41B71CC990008C4D3 /* EventViewController.m */,
+			);
+			path = Event;
+			sourceTree = "<group>";
+		};
+		6DED7FC61B71CCB60008C4D3 /* Lobby */ = {
+			isa = PBXGroup;
+			children = (
+				6DED7FC71B71CCB60008C4D3 /* LobbyViewController.h */,
+				6DED7FC81B71CCB60008C4D3 /* LobbyViewController.m */,
+			);
+			path = Lobby;
+			sourceTree = "<group>";
+		};
+		6DED7FC91B71CCB60008C4D3 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				6DED7FCA1B71CCB60008C4D3 /* LoginViewController.h */,
+				6DED7FCB1B71CCB60008C4D3 /* LoginViewController.m */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,12 +233,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6DA8592F1B6E6BCF0047D2A3 /* Login in Resources */,
 				6DA8590D1B6E69C60047D2A3 /* Main.storyboard in Resources */,
 				6DA859121B6E69C60047D2A3 /* LaunchScreen.xib in Resources */,
-				6DA859341B6E6C0A0047D2A3 /* Event in Resources */,
 				6DA8590F1B6E69C60047D2A3 /* Images.xcassets in Resources */,
-				6DA8592E1B6E6BCF0047D2A3 /* Lobby in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,8 +253,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DED7FC51B71CC990008C4D3 /* EventViewController.m in Sources */,
 				6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */,
 				6DA859041B6E69C60047D2A3 /* main.m in Sources */,
+				6DED7FCC1B71CCB60008C4D3 /* LobbyViewController.m in Sources */,
+				6DED7FCD1B71CCB60008C4D3 /* LoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,6 +452,7 @@
 				6DA859231B6E69C60047D2A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6DA859241B6E69C60047D2A3 /* Build configuration list for PBXNativeTarget "SoapBoxTVTests" */ = {
 			isa = XCConfigurationList;
@@ -430,6 +461,7 @@
 				6DA859261B6E69C60047D2A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
