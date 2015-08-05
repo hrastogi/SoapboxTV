@@ -16,6 +16,10 @@
 		6DED7FC51B71CC990008C4D3 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FC41B71CC990008C4D3 /* EventViewController.m */; };
 		6DED7FCC1B71CCB60008C4D3 /* LobbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FC81B71CCB60008C4D3 /* LobbyViewController.m */; };
 		6DED7FCD1B71CCB60008C4D3 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FCB1B71CCB60008C4D3 /* LoginViewController.m */; };
+		6DED7FD31B71D37A0008C4D3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DED7FCF1B71D37A0008C4D3 /* Fabric.framework */; };
+		6DED7FD41B71D37B0008C4D3 /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DED7FD01B71D37A0008C4D3 /* TwitterKit.framework */; };
+		6DED7FD51B71D37B0008C4D3 /* TwitterKitResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6DED7FD11B71D37A0008C4D3 /* TwitterKitResources.bundle */; };
+		6DED7FD61B71D37B0008C4D3 /* TwitterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DED7FD21B71D37A0008C4D3 /* TwitterCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +50,10 @@
 		6DED7FC81B71CCB60008C4D3 /* LobbyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LobbyViewController.m; sourceTree = "<group>"; };
 		6DED7FCA1B71CCB60008C4D3 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		6DED7FCB1B71CCB60008C4D3 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		6DED7FCF1B71D37A0008C4D3 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = SOURCE_ROOT; };
+		6DED7FD01B71D37A0008C4D3 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = SOURCE_ROOT; };
+		6DED7FD11B71D37A0008C4D3 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = SOURCE_ROOT; };
+		6DED7FD21B71D37A0008C4D3 /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterCore.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +61,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DED7FD31B71D37A0008C4D3 /* Fabric.framework in Frameworks */,
+				6DED7FD61B71D37B0008C4D3 /* TwitterCore.framework in Frameworks */,
+				6DED7FD41B71D37B0008C4D3 /* TwitterKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +98,10 @@
 		6DA859001B6E69C50047D2A3 /* SoapBoxTV */ = {
 			isa = PBXGroup;
 			children = (
+				6DED7FCF1B71D37A0008C4D3 /* Fabric.framework */,
+				6DED7FD01B71D37A0008C4D3 /* TwitterKit.framework */,
+				6DED7FD11B71D37A0008C4D3 /* TwitterKitResources.bundle */,
+				6DED7FD21B71D37A0008C4D3 /* TwitterCore.framework */,
 				6DED7FC61B71CCB60008C4D3 /* Lobby */,
 				6DED7FC91B71CCB60008C4D3 /* Login */,
 				6DED7FC21B71CC990008C4D3 /* Event */,
@@ -163,6 +178,7 @@
 				6DA858FA1B6E69C50047D2A3 /* Sources */,
 				6DA858FB1B6E69C50047D2A3 /* Frameworks */,
 				6DA858FC1B6E69C50047D2A3 /* Resources */,
+				6DED7FCE1B71D3480008C4D3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -233,6 +249,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DED7FD51B71D37B0008C4D3 /* TwitterKitResources.bundle in Resources */,
 				6DA8590D1B6E69C60047D2A3 /* Main.storyboard in Resources */,
 				6DA859121B6E69C60047D2A3 /* LaunchScreen.xib in Resources */,
 				6DA8590F1B6E69C60047D2A3 /* Images.xcassets in Resources */,
@@ -247,6 +264,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6DED7FCE1B71D3480008C4D3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 90403021d14ddd6a256a5c9b4f205164ae1cca28 bc12c2c3dd5f7eb78dd3e6d2c4f791a412a41413e4d8a98816b9fdf6e1bc24ac";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6DA858FA1B6E69C50047D2A3 /* Sources */ = {
@@ -383,6 +416,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = SoapBoxTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -393,6 +430,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = SoapBoxTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

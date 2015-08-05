@@ -7,7 +7,7 @@
 //
 
 #import "LoginViewController.h"
-
+#import <TwitterKit/TwitterKit.h>
 @interface LoginViewController ()
 
 @end
@@ -17,6 +17,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+
+    TWTRLogInButton *logInButton = [TWTRLogInButton buttonWithLogInCompletion:^(TWTRSession *session, NSError *error) {
+        // play with Twitter session
+        if (session)
+        {
+            // This session is then used to make Twitter API requests.
+            NSLog(@"%@", [session userID]);
+            NSLog(@"%@", [session userName]);
+            NSLog(@"%@", [session authToken]);
+            NSLog(@"%@", [session authTokenSecret]);
+            
+            
+        }
+        else
+        {
+            NSLog(@"Error: %@", [error localizedDescription]);
+        }
+    }];
+    logInButton.center = self.view.center;
+    [self.view addSubview:logInButton];
+
 }
 
 - (void)didReceiveMemoryWarning {
