@@ -7,6 +7,7 @@
 //
 
 #import "LoginViewController.h"
+#import "LobbyViewController.h"
 #import <TwitterKit/TwitterKit.h>
 @interface LoginViewController ()
 
@@ -28,6 +29,8 @@
             NSLog(@"%@", [session authToken]);
             NSLog(@"%@", [session authTokenSecret]);
             
+            // Push the Lobby View controller.
+            [self loadLobbyViewController];
             
         }
         else
@@ -45,4 +48,9 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)loadLobbyViewController{
+    
+    LobbyViewController *lobbyVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"LobbyViewController"];
+    [self.navigationController pushViewController:lobbyVC animated:YES];
+}
 @end
