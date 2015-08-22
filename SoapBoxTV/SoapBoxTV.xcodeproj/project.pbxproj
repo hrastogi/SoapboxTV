@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26872D51AD9F3ECABDB36007 /* libPods-SoapBoxTV.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 911DAE482C3E7F119D13DB7F /* libPods-SoapBoxTV.a */; };
 		6DA859041B6E69C60047D2A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859031B6E69C60047D2A3 /* main.m */; };
 		6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859061B6E69C60047D2A3 /* AppDelegate.m */; };
 		6DA8590D1B6E69C60047D2A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8590B1B6E69C60047D2A3 /* Main.storyboard */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0533F2DDC80E04311C3D436B /* Pods-SoapBoxTV.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SoapBoxTV.release.xcconfig"; path = "Pods/Target Support Files/Pods-SoapBoxTV/Pods-SoapBoxTV.release.xcconfig"; sourceTree = "<group>"; };
 		6DA858FE1B6E69C50047D2A3 /* SoapBoxTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoapBoxTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA859021B6E69C60047D2A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA859031B6E69C60047D2A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -54,6 +56,8 @@
 		6DED7FD01B71D37A0008C4D3 /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterKit.framework; sourceTree = SOURCE_ROOT; };
 		6DED7FD11B71D37A0008C4D3 /* TwitterKitResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = SOURCE_ROOT; };
 		6DED7FD21B71D37A0008C4D3 /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterCore.framework; sourceTree = SOURCE_ROOT; };
+		911DAE482C3E7F119D13DB7F /* libPods-SoapBoxTV.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SoapBoxTV.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDEE55FC906EC13ABE0BD768 /* Pods-SoapBoxTV.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SoapBoxTV.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SoapBoxTV/Pods-SoapBoxTV.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +68,7 @@
 				6DED7FD31B71D37A0008C4D3 /* Fabric.framework in Frameworks */,
 				6DED7FD61B71D37B0008C4D3 /* TwitterCore.framework in Frameworks */,
 				6DED7FD41B71D37B0008C4D3 /* TwitterKit.framework in Frameworks */,
+				26872D51AD9F3ECABDB36007 /* libPods-SoapBoxTV.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +88,8 @@
 				6DA859001B6E69C50047D2A3 /* SoapBoxTV */,
 				6DA8591A1B6E69C60047D2A3 /* SoapBoxTVTests */,
 				6DA858FF1B6E69C50047D2A3 /* Products */,
+				D40E8CA800C6A07A52454B71 /* Pods */,
+				D07DF5C6A88D59ADF357C344 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -168,6 +175,23 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		D07DF5C6A88D59ADF357C344 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				911DAE482C3E7F119D13DB7F /* libPods-SoapBoxTV.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D40E8CA800C6A07A52454B71 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CDEE55FC906EC13ABE0BD768 /* Pods-SoapBoxTV.debug.xcconfig */,
+				0533F2DDC80E04311C3D436B /* Pods-SoapBoxTV.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -175,10 +199,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6DA859211B6E69C60047D2A3 /* Build configuration list for PBXNativeTarget "SoapBoxTV" */;
 			buildPhases = (
+				069D2A8D7B4F08C54D6301F2 /* Check Pods Manifest.lock */,
 				6DA858FA1B6E69C50047D2A3 /* Sources */,
 				6DA858FB1B6E69C50047D2A3 /* Frameworks */,
 				6DA858FC1B6E69C50047D2A3 /* Resources */,
 				6DED7FCE1B71D3480008C4D3 /* ShellScript */,
+				0D92AB373F0E35B5CEA5063C /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -266,6 +292,36 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		069D2A8D7B4F08C54D6301F2 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		0D92AB373F0E35B5CEA5063C /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SoapBoxTV/Pods-SoapBoxTV-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		6DED7FCE1B71D3480008C4D3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -414,6 +470,7 @@
 		};
 		6DA859221B6E69C60047D2A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CDEE55FC906EC13ABE0BD768 /* Pods-SoapBoxTV.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -428,6 +485,7 @@
 		};
 		6DA859231B6E69C60047D2A3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0533F2DDC80E04311C3D436B /* Pods-SoapBoxTV.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
