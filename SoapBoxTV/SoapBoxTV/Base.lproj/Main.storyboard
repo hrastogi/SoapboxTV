@@ -41,6 +41,18 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oe2-k0-Ign">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                         <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dxV-jt-rHn">
+                                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                                <state key="normal" title="Button">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <variation key="widthClass=compact" fixedFrame="YES">
+                                                    <rect key="frame" x="0.0" y="0.0" width="400" height="200"/>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="pushRoomController:" destination="h6N-4q-T9l" eventType="touchUpInside" id="bTS-Gc-nNW"/>
+                                                </connections>
+                                            </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FUI" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cBc-Dt-UyA">
                                                 <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -74,6 +86,7 @@
                                         <color key="backgroundColor" red="0.078431372549019607" green="0.17647058823529413" blue="0.43529411764705883" alpha="1" colorSpace="calibratedRGB"/>
                                         <variation key="default">
                                             <mask key="subviews">
+                                                <exclude reference="dxV-jt-rHn"/>
                                                 <exclude reference="cBc-Dt-UyA"/>
                                                 <exclude reference="Fe2-np-C7F"/>
                                                 <exclude reference="Uwl-lJ-RaB"/>
@@ -82,6 +95,7 @@
                                         <variation key="widthClass=compact" fixedFrame="YES">
                                             <rect key="frame" x="0.0" y="8" width="400" height="200"/>
                                             <mask key="subviews">
+                                                <include reference="dxV-jt-rHn"/>
                                                 <include reference="cBc-Dt-UyA"/>
                                                 <include reference="Fe2-np-C7F"/>
                                                 <include reference="Uwl-lJ-RaB"/>
@@ -223,6 +237,23 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W4Y-9e-LiT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1951.5" y="114"/>
+        </scene>
+        <!--Room View Controller-->
+        <scene sceneID="cb4-28-72Z">
+            <objects>
+                <viewController storyboardIdentifier="RoomViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="NE7-OE-v3Z" customClass="RoomViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Dhs-Ow-XJP"/>
+                        <viewControllerLayoutGuide type="bottom" id="sB5-ca-0h0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kF8-Cy-PNH">
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Leb-kS-zes" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2679" y="114"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Bxn-6S-6bS">

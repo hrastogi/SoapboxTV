@@ -1,18 +1,18 @@
 //
-//  EventViewController.m
+//  RoomViewController.m
 //  SoapBoxTV
 //
-//  Created by HEENA RASTOGI on 8/2/15.
+//  Created by HEENA RASTOGI on 8/22/15.
 //  Copyright (c) 2015 HEENA RASTOGI. All rights reserved.
 //
 
-#import "EventViewController.h"
+#import "RoomViewController.h"
 
-@interface EventViewController ()
+@interface RoomViewController ()
 
 @end
 
-@implementation EventViewController
+@implementation RoomViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];

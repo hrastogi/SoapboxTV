@@ -7,10 +7,12 @@
 //
 
 #import "AFNetworking.h"
+#import "RoomViewController.h"
 
 #import "LobbyViewController.h"
 static NSString * const BaseURLString = @"http://www.raywenderlich.com/demos/weather_sample/";
 @interface LobbyViewController ()
+-(IBAction)pushRoomController:(id)sender;
 
 @end
 
@@ -43,18 +45,14 @@ static NSString * const BaseURLString = @"http://www.raywenderlich.com/demos/wea
     NSString *string = [NSString stringWithFormat:@"%@weather.php?format=json", BaseURLString];
     NSURL *url = [NSURL URLWithString:string];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    // 2
+
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        // 3
+
         NSLog(@"Data Retrieved");
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        
-        // 4
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error Retrieving Weather"
                                                             message:[error localizedDescription]
                                                            delegate:nil
@@ -62,9 +60,13 @@ static NSString * const BaseURLString = @"http://www.raywenderlich.com/demos/wea
                                                   otherButtonTitles:nil];
         [alertView show];
     }];
-    
-    // 5
     [operation start];
 }
 
+-(IBAction)pushRoomController:(id)sender{
+    
+    RoomViewController *roomVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"RoomViewController"];
+    [self.navigationController pushViewController:roomVC animated:YES];
+
+}
 @end
