@@ -14,6 +14,7 @@
 		6DA8590F1B6E69C60047D2A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8590E1B6E69C60047D2A3 /* Images.xcassets */; };
 		6DA859121B6E69C60047D2A3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6DA859101B6E69C60047D2A3 /* LaunchScreen.xib */; };
 		6DA8591E1B6E69C60047D2A3 /* SoapBoxTVTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA8591D1B6E69C60047D2A3 /* SoapBoxTVTests.m */; };
+		6DDAA9351B893CB3003DFD22 /* Room.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DDAA9341B893CB3003DFD22 /* Room.m */; };
 		6DED7FC51B71CC990008C4D3 /* EventViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FC41B71CC990008C4D3 /* EventViewController.m */; };
 		6DED7FCC1B71CCB60008C4D3 /* LobbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FC81B71CCB60008C4D3 /* LobbyViewController.m */; };
 		6DED7FCD1B71CCB60008C4D3 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DED7FCB1B71CCB60008C4D3 /* LoginViewController.m */; };
@@ -46,6 +47,8 @@
 		6DA859171B6E69C60047D2A3 /* SoapBoxTVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SoapBoxTVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA8591C1B6E69C60047D2A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA8591D1B6E69C60047D2A3 /* SoapBoxTVTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SoapBoxTVTests.m; sourceTree = "<group>"; };
+		6DDAA9331B893CB3003DFD22 /* Room.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Room.h; sourceTree = "<group>"; };
+		6DDAA9341B893CB3003DFD22 /* Room.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Room.m; sourceTree = "<group>"; };
 		6DED7FC31B71CC990008C4D3 /* EventViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventViewController.h; sourceTree = "<group>"; };
 		6DED7FC41B71CC990008C4D3 /* EventViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventViewController.m; sourceTree = "<group>"; };
 		6DED7FC71B71CCB60008C4D3 /* LobbyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LobbyViewController.h; sourceTree = "<group>"; };
@@ -105,6 +108,7 @@
 		6DA859001B6E69C50047D2A3 /* SoapBoxTV */ = {
 			isa = PBXGroup;
 			children = (
+				6DDAA9321B893C98003DFD22 /* Models */,
 				6DED7FCF1B71D37A0008C4D3 /* Fabric.framework */,
 				6DED7FD01B71D37A0008C4D3 /* TwitterKit.framework */,
 				6DED7FD11B71D37A0008C4D3 /* TwitterKitResources.bundle */,
@@ -146,6 +150,15 @@
 				6DA8591C1B6E69C60047D2A3 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6DDAA9321B893C98003DFD22 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6DDAA9331B893CB3003DFD22 /* Room.h */,
+				6DDAA9341B893CB3003DFD22 /* Room.m */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		6DED7FC21B71CC990008C4D3 /* Event */ = {
@@ -342,6 +355,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DDAA9351B893CB3003DFD22 /* Room.m in Sources */,
 				6DED7FC51B71CC990008C4D3 /* EventViewController.m in Sources */,
 				6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */,
 				6DA859041B6E69C60047D2A3 /* main.m in Sources */,
