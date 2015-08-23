@@ -4,6 +4,7 @@
 target 'SoapBoxTV' do
 pod 'AFNetworking'
 pod 'OAStackView'
+pod 'OpenTok'
 end
 
 target 'SoapBoxTVTests' do

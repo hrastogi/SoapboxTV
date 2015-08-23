@@ -10,7 +10,7 @@
 #import "RoomViewController.h"
 
 #import "LobbyViewController.h"
-static NSString * const BaseURLString = @"http://www.raywenderlich.com/demos/weather_sample/";
+static NSString * const BaseURLString = @"http://54.68.226.173:7131/api/rooms";
 @interface LobbyViewController ()
 -(IBAction)pushRoomController:(id)sender;
 
@@ -42,8 +42,7 @@ static NSString * const BaseURLString = @"http://www.raywenderlich.com/demos/wea
 -(void)fetchData{
     
     // 1
-    NSString *string = [NSString stringWithFormat:@"%@weather.php?format=json", BaseURLString];
-    NSURL *url = [NSURL URLWithString:string];
+    NSURL *url = [NSURL URLWithString:BaseURLString];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
