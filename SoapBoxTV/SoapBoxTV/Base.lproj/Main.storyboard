@@ -236,7 +236,32 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W4Y-9e-LiT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1951.5" y="114"/>
+            <point key="canvasLocation" x="2040" y="-587"/>
+        </scene>
+        <!--Lobby Table View Controller-->
+        <scene sceneID="fwC-q3-E2d">
+            <objects>
+                <tableViewController storyboardIdentifier="LobbyTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="CGG-t2-VFY" customClass="LobbyTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="qUH-sG-QQi">
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="NI7-xF-PEQ">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NI7-xF-PEQ" id="d4e-ta-jbg">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="CGG-t2-VFY" id="I4E-T8-CTq"/>
+                            <outlet property="delegate" destination="CGG-t2-VFY" id="x3G-Sd-xuP"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hO0-en-3vu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1939.5" y="114"/>
         </scene>
         <!--Room View Controller-->
         <scene sceneID="cb4-28-72Z">
@@ -247,6 +272,7 @@
                         <viewControllerLayoutGuide type="bottom" id="sB5-ca-0h0"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kF8-Cy-PNH">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
