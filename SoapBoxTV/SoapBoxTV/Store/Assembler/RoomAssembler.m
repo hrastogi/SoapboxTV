@@ -29,7 +29,7 @@
     }
     
     
-    return [NSArray arrayWithArray:roomsArray];
+    return [NSArray arrayWithArray:tempArray];
 }
 
 -(Room*)createRoomFromDictionary:(NSDictionary*)dto{

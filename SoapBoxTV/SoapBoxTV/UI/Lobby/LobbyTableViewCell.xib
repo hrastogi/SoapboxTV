@@ -53,6 +53,9 @@
                     </view>
                 </subviews>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="roomTitle" destination="jEP-oe-GPw" id="etI-dx-dhQ"/>
+            </connections>
         </tableViewCell>
     </objects>
 </document>

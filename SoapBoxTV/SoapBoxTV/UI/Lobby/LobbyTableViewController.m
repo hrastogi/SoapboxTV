@@ -58,7 +58,7 @@ static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     LobbyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:lobbyCellNibName forIndexPath:indexPath];
-    
+    [cell updateCellWuthRoomData:self.rooms[indexPath.row]];
     return cell;
 }
 

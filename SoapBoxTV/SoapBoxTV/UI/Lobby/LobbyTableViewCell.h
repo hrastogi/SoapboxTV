@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class Room;
 @interface LobbyTableViewCell : UITableViewCell
-
+- (void) updateCellWuthRoomData:(Room*)room;
 @end
