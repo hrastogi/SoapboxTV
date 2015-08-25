@@ -51,10 +51,10 @@
 
 -(void)loadLobbyViewController{
     
-//    LobbyTableViewController *lobbyVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"LobbyTableViewController"];
-//    [self.navigationController pushViewController:lobbyVC animated:YES];
-    
-    LobbyViewController *lobbyVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"LobbyViewController"];
+    LobbyTableViewController *lobbyVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"LobbyTableViewController"];
     [self.navigationController pushViewController:lobbyVC animated:YES];
+    
+//    LobbyViewController *lobbyVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"LobbyViewController"];
+//    [self.navigationController pushViewController:lobbyVC animated:YES];
 }
 @end

@@ -22,9 +22,23 @@
 
 #pragma mark - Assembler
 -(NSArray*)createRoomsFromJsonResponse:(NSDictionary*)results{
-    return [NSArray array];
+    NSArray *roomsArray = [results objectForKey:@"soapbox_rooms"];
+    NSMutableArray *tempArray =[NSMutableArray array];
+    for(NSDictionary *dto in roomsArray){
+        [tempArray addObject:[self createRoomFromDictionary:dto]];
+    }
+    
+    
+    return [NSArray arrayWithArray:roomsArray];
 }
 
 -(Room*)createRoomFromDictionary:(NSDictionary*)dto{
+    Room *room = [[Room alloc] init];
+    room.roomId = [(NSString*)[dto valueForKey:@"room_id"] integerValue];
+    room.title = [dto valueForKey:@"room_title"];
+    room.subTitle = [dto valueForKey:@"room_sub_title"];
+    
+    
+    return room;
 }
 @end

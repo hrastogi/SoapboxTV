@@ -39,5 +39,6 @@ static NSString * const BaseURLString = @"http://54.68.226.173:7131/api/rooms";
 
 -(void)didLoadData:(id)responseObject withCallback:(SBCompletionBlock)callback{
     self.rooms = [[RoomAssembler sharedInstance] createRoomsFromJsonResponse:responseObject];
+    callback(nil);
 }
 @end

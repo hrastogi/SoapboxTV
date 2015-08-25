@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		26872D51AD9F3ECABDB36007 /* libPods-SoapBoxTV.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 911DAE482C3E7F119D13DB7F /* libPods-SoapBoxTV.a */; };
+		6D26BF3C1B8C2B4B0011826B /* LobbyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D26BF3A1B8C2B4B0011826B /* LobbyTableViewCell.m */; };
+		6D26BF3D1B8C2B4B0011826B /* LobbyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D26BF3B1B8C2B4B0011826B /* LobbyTableViewCell.xib */; };
 		6D82EA771B8A8F58007EE2D6 /* LobbyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D82EA701B8A8F58007EE2D6 /* LobbyTableViewController.m */; };
 		6D82EA781B8A8F58007EE2D6 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D82EA731B8A8F58007EE2D6 /* LoginViewController.m */; };
 		6D82EA791B8A8F58007EE2D6 /* RoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D82EA761B8A8F58007EE2D6 /* RoomViewController.m */; };
-		6D82EA7C1B8AE53A007EE2D6 /* LobbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D82EA7B1B8AE53A007EE2D6 /* LobbyViewController.m */; };
 		6DA859041B6E69C60047D2A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859031B6E69C60047D2A3 /* main.m */; };
 		6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859061B6E69C60047D2A3 /* AppDelegate.m */; };
 		6DA8590D1B6E69C60047D2A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8590B1B6E69C60047D2A3 /* Main.storyboard */; };
@@ -39,14 +40,15 @@
 
 /* Begin PBXFileReference section */
 		0533F2DDC80E04311C3D436B /* Pods-SoapBoxTV.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SoapBoxTV.release.xcconfig"; path = "Pods/Target Support Files/Pods-SoapBoxTV/Pods-SoapBoxTV.release.xcconfig"; sourceTree = "<group>"; };
+		6D26BF391B8C2B4B0011826B /* LobbyTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LobbyTableViewCell.h; sourceTree = "<group>"; };
+		6D26BF3A1B8C2B4B0011826B /* LobbyTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LobbyTableViewCell.m; sourceTree = "<group>"; };
+		6D26BF3B1B8C2B4B0011826B /* LobbyTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LobbyTableViewCell.xib; sourceTree = "<group>"; };
 		6D82EA6F1B8A8F58007EE2D6 /* LobbyTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LobbyTableViewController.h; sourceTree = "<group>"; };
 		6D82EA701B8A8F58007EE2D6 /* LobbyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LobbyTableViewController.m; sourceTree = "<group>"; };
 		6D82EA721B8A8F58007EE2D6 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		6D82EA731B8A8F58007EE2D6 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		6D82EA751B8A8F58007EE2D6 /* RoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoomViewController.h; sourceTree = "<group>"; };
 		6D82EA761B8A8F58007EE2D6 /* RoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoomViewController.m; sourceTree = "<group>"; };
-		6D82EA7A1B8AE53A007EE2D6 /* LobbyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LobbyViewController.h; sourceTree = "<group>"; };
-		6D82EA7B1B8AE53A007EE2D6 /* LobbyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LobbyViewController.m; sourceTree = "<group>"; };
 		6DA858FE1B6E69C50047D2A3 /* SoapBoxTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoapBoxTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA859021B6E69C60047D2A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA859031B6E69C60047D2A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -109,8 +111,9 @@
 			children = (
 				6D82EA6F1B8A8F58007EE2D6 /* LobbyTableViewController.h */,
 				6D82EA701B8A8F58007EE2D6 /* LobbyTableViewController.m */,
-				6D82EA7A1B8AE53A007EE2D6 /* LobbyViewController.h */,
-				6D82EA7B1B8AE53A007EE2D6 /* LobbyViewController.m */,
+				6D26BF391B8C2B4B0011826B /* LobbyTableViewCell.h */,
+				6D26BF3A1B8C2B4B0011826B /* LobbyTableViewCell.m */,
+				6D26BF3B1B8C2B4B0011826B /* LobbyTableViewCell.xib */,
 			);
 			path = Lobby;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6DED7FD51B71D37B0008C4D3 /* TwitterKitResources.bundle in Resources */,
+				6D26BF3D1B8C2B4B0011826B /* LobbyTableViewCell.xib in Resources */,
 				6DA8590D1B6E69C60047D2A3 /* Main.storyboard in Resources */,
 				6DA859121B6E69C60047D2A3 /* LaunchScreen.xib in Resources */,
 				6DA8590F1B6E69C60047D2A3 /* Images.xcassets in Resources */,
@@ -394,12 +398,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D26BF3C1B8C2B4B0011826B /* LobbyTableViewCell.m in Sources */,
 				6D82EA771B8A8F58007EE2D6 /* LobbyTableViewController.m in Sources */,
 				6DDAA9451B8A86C7003DFD22 /* RoomStore.m in Sources */,
 				6DDAA9351B893CB3003DFD22 /* Room.m in Sources */,
 				6D82EA791B8A8F58007EE2D6 /* RoomViewController.m in Sources */,
 				6DDAA93F1B8A6D15003DFD22 /* RoomAssembler.m in Sources */,
-				6D82EA7C1B8AE53A007EE2D6 /* LobbyViewController.m in Sources */,
 				6D82EA781B8A8F58007EE2D6 /* LoginViewController.m in Sources */,
 				6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */,
 				6DA859041B6E69C60047D2A3 /* main.m in Sources */,
