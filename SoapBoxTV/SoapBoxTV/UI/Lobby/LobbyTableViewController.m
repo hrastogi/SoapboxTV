@@ -8,6 +8,7 @@
 #import "RoomStore.h"
 #import "LobbyTableViewController.h"
 #import "LobbyTableViewCell.h"
+#import "RoomViewController.h"
 
 static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 
@@ -63,15 +64,13 @@ static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 }
 
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    
+    RoomViewController *lobbyVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"RoomViewController"];
+    [self.navigationController pushViewController:lobbyVC animated:YES];
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    
 }
-*/
 
 @end
