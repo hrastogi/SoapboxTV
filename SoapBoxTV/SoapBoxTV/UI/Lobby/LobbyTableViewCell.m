@@ -10,6 +10,7 @@
 #import "Room.h"
 @interface LobbyTableViewCell()
 @property (nonatomic,weak) IBOutlet UILabel *roomTitle;
+@property (nonatomic,weak) IBOutlet UILabel *roomSubTitle;
 @end
 @implementation LobbyTableViewCell
 
@@ -23,8 +24,9 @@
     // Configure the view for the selected state
 }
 
-- (void) updateCellWuthRoomData:(Room*)room{
+- (void) updateCellWithRoomData:(Room*)room{
     self.roomTitle.text = room.title;
+    self.roomSubTitle.text = room.subTitle;
 }
 
 @end
