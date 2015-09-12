@@ -37,6 +37,7 @@
     room.roomId = [(NSString*)[dto valueForKey:@"room_id"] integerValue];
     room.title = [dto valueForKey:@"room_title"];
     room.subTitle = [dto valueForKey:@"room_sub_title"];
+    room.startTime = [dto valueForKey:@"room_start_time"];
     
     
     return room;

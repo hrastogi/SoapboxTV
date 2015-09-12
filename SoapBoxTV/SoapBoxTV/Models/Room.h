@@ -15,5 +15,6 @@
 @property (nonatomic) NSString *hashTag;
 @property (nonatomic) NSString *slug;
 @property (nonatomic) NSString *presenter;
+@property (nonatomic) NSString *startTime;
 
 @end
