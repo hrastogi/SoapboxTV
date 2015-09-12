@@ -359,6 +359,7 @@
 				TargetAttributes = {
 					6DA858FD1B6E69C50047D2A3 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = 8BD4XPZDSV;
 					};
 					6DA859161B6E69C60047D2A3 = {
 						CreatedOnToolsVersion = 6.4;
@@ -593,13 +594,18 @@
 			baseConfigurationReference = CDEE55FC906EC13ABE0BD768 /* Pods-SoapBoxTV.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = SoapBoxTV/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos8.4;
 			};
 			name = Debug;
 		};
@@ -608,13 +614,18 @@
 			baseConfigurationReference = 0533F2DDC80E04311C3D436B /* Pods-SoapBoxTV.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = SoapBoxTV/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos8.4;
 			};
 			name = Release;
 		};

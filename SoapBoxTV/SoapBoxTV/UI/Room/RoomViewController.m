@@ -26,9 +26,9 @@ static double widgetWidth = 320;
 // Replace with your OpenTok API key
 static NSString* const kApiKey = @"45304762";
 // Replace with your generated session ID
-static NSString* const kSessionId = @"2_MX40NTMwNDc2Mn5-MTQ0MTI0NjQwNTk3Mn5laThQNTZGb2E5MGJVS1ZjOWhxQ2FzTG5-UH4";
+static NSString* const kSessionId = @"2_MX40NTMwNDc2Mn5-MTQ0MjAxMTM5MTU2N35uUTdkMzYyWDluZDN3NE9kWVVNMk1GdGJ-UH4";
 // Replace with your generated token
-static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9MjMzMzQ3OTdhNzdhNTZlOWEzZjhlYmVlYjRjNmE2MDRjMmRiNjM5Yzpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5UTXdORGMyTW41LU1UUTBNVEkwTmpRd05UazNNbjVsYVRoUU5UWkdiMkU1TUdKVlMxWmpPV2h4UTJGelRHNS1VSDQmY3JlYXRlX3RpbWU9MTQ0MTI0NjQwOSZub25jZT0wLjIwMTYwODI4NjczNzA2MTEmZXhwaXJlX3RpbWU9MTQ0MTI0OTk0NCZjb25uZWN0aW9uX2RhdGE9";
+static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYzQ5MWY3MzFiZWRiNDkyZTk3OWFhNWU3ZjQ3ZjI4YjhkMjpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5UTXdORGMyTW41LU1UUTBNakF4TVRNNU1UVTJOMzV1VVRka016WXlXRGx1WkROM05FOWtXVlZOTWsxR2RHSi1VSDQmY3JlYXRlX3RpbWU9MTQ0MjAxMTM5NSZub25jZT0wLjI2MDYyNTY5MzIwOTQzNTImZXhwaXJlX3RpbWU9MTQ0NDYwMzIyNCZjb25uZWN0aW9uX2RhdGE9";
 
 // Change to NO to subscribe to streams other than your own.
 static bool subscribeToSelf = NO;
