@@ -18,6 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    self.navigationController.navigationBarHidden = NO;
 
     TWTRLogInButton *logInButton = [TWTRLogInButton buttonWithLogInCompletion:^(TWTRSession *session, NSError *error) {
         // play with Twitter session
@@ -51,7 +52,8 @@
 -(void)loadLobbyViewController{
     
     LobbyTableViewController *lobbyVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"LobbyTableViewController"];
-    [self.navigationController pushViewController:lobbyVC animated:YES];
+    self.navigationItem.title = @"";
+    [self.navigationController pushViewController:lobbyVC animated:NO];
     
 }
 @end
