@@ -3,8 +3,8 @@
 
 target 'SoapBoxTV' do
 pod 'AFNetworking'
-pod 'OAStackView'
 pod 'OpenTok'
+pod 'SIOSocket', '~> 0.2.0'
 end
 
 target 'SoapBoxTVTests' do
