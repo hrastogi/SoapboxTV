@@ -8,18 +8,52 @@
 #import "RoomViewController.h"
 #import <OpenTok/OpenTok.h>
 
-@interface RoomViewController ()
-<OTSessionDelegate, OTSubscriberKitDelegate, OTPublisherDelegate>
+
+#define APP_IN_FULL_SCREEN @"appInFullScreenMode"
+#define PUBLISHER_BAR_HEIGHT 50.0f
+#define SUBSCRIBER_BAR_HEIGHT 66.0f
+#define ARCHIVE_BAR_HEIGHT 35.0f
+#define PUBLISHER_ARCHIVE_CONTAINER_HEIGHT 85.0f
+
+#define PUBLISHER_PREVIEW_HEIGHT 87.0f
+#define PUBLISHER_PREVIEW_WIDTH 113.0f
+
+#define OVERLAY_HIDE_TIME 7.0f
+
+
+// otherwise no upside down rotation
+@interface UINavigationController (RotationAll)
+- (NSUInteger)supportedInterfaceOrientations;
+@end
+
+
+@implementation UINavigationController (RotationAll)
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskAll;
+}
 
 @end
 
-@implementation RoomViewController {
-    OTSession* _session;
-    OTPublisher* _publisher;
-    OTSubscriber* _subscriber;
+@interface RoomViewController ()<OTSessionDelegate, OTSubscriberKitDelegate,OTPublisherDelegate>{
+    NSMutableDictionary *allStreams;
+    NSMutableDictionary *allSubscribers;
+    NSMutableArray *allConnectionsIds;
+    NSMutableArray *backgroundConnectedStreams;
+    
+    OTSession *_session;
+    OTPublisher *_publisher;
+    OTSubscriber *_currentSubscriber;
+    CGPoint _startPosition;
+    
+    BOOL initialized;
+    int _currentSubscriberIndex;
 }
-static double widgetHeight = 240;
-static double widgetWidth = 320;
+
+
+@end
+
+@implementation RoomViewController
 
 // *** Fill the following variables using your own Project info  ***
 // ***          https://dashboard.tokbox.com/projects            ***
@@ -30,250 +64,1324 @@ static NSString* const kSessionId = @"2_MX40NTMwNDc2Mn5-MTQ0MjAxMTM5MTU2N35uUTdk
 // Replace with your generated token
 static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYzQ5MWY3MzFiZWRiNDkyZTk3OWFhNWU3ZjQ3ZjI4YjhkMjpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5UTXdORGMyTW41LU1UUTBNakF4TVRNNU1UVTJOMzV1VVRka016WXlXRGx1WkROM05FOWtXVlZOTWsxR2RHSi1VSDQmY3JlYXRlX3RpbWU9MTQ0MjAxMTM5NSZub25jZT0wLjI2MDYyNTY5MzIwOTQzNTImZXhwaXJlX3RpbWU9MTQ0NDYwMzIyNCZjb25uZWN0aW9uX2RhdGE9";
 
-// Change to NO to subscribe to streams other than your own.
-static bool subscribeToSelf = NO;
+
 
 #pragma mark - View lifecycle
+
+
+@synthesize videoContainerView;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    // Step 1: As the view comes into the foreground, initialize a new instance
-    // of OTSession and begin the connection process.
-    _session = [[OTSession alloc] initWithApiKey:kApiKey
-                                       sessionId:kSessionId
-                                        delegate:self];
-    [self doConnect];
+    self.videoContainerView.bounces = NO;
+    
+    [self.view sendSubviewToBack:self.videoContainerView];
+    self.endCallButton.titleLabel.lineBreakMode = NSLineBreakByCharWrapping;
+    self.endCallButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    
+    // Default no full screen
+    [self.topOverlayView.layer setValue:[NSNumber numberWithBool:NO]
+                                 forKey:APP_IN_FULL_SCREEN];
+    
+    
+    self.audioPubUnpubButton.autoresizingMask  =
+    UIViewAutoresizingFlexibleLeftMargin
+    | UIViewAutoresizingFlexibleRightMargin |
+    UIViewAutoresizingFlexibleTopMargin |
+    UIViewAutoresizingFlexibleBottomMargin;
+    
+    
+    // Add right side border to camera toggle button
+    CALayer *rightBorder = [CALayer layer];
+    rightBorder.borderColor = [UIColor whiteColor].CGColor;
+    rightBorder.borderWidth = 1;
+    rightBorder.frame =
+    CGRectMake(-1,
+               -1,
+               CGRectGetWidth(self.cameraToggleButton.frame),
+               CGRectGetHeight(self.cameraToggleButton.frame) + 2);
+    self.cameraToggleButton.clipsToBounds = YES;
+    [self.cameraToggleButton.layer addSublayer:rightBorder];
+    
+    // Left side border to audio publish/unpublish button
+    CALayer *leftBorder = [CALayer layer];
+    leftBorder.borderColor = [UIColor whiteColor].CGColor;
+    leftBorder.borderWidth = 1;
+    leftBorder.frame =
+    CGRectMake(-1,
+               -1,
+               CGRectGetWidth(self.audioPubUnpubButton.frame) + 5,
+               CGRectGetHeight(self.audioPubUnpubButton.frame) + 2);
+    [self.audioPubUnpubButton.layer addSublayer:leftBorder];
+    
+    // configure video container view
+    self.videoContainerView.scrollEnabled = YES;
+    videoContainerView.pagingEnabled = YES;
+    videoContainerView.delegate = self;
+    videoContainerView.showsHorizontalScrollIndicator = NO;
+    videoContainerView.showsVerticalScrollIndicator = YES;
+    videoContainerView.bounces = NO;
+    videoContainerView.alwaysBounceHorizontal = NO;
+    
+    
+    // initialize constants
+    allStreams = [[NSMutableDictionary alloc] init];
+    allSubscribers = [[NSMutableDictionary alloc] init];
+    allConnectionsIds = [[NSMutableArray alloc] init];
+    backgroundConnectedStreams = [[NSMutableArray alloc] init];
+    
+    // set up look of the page
+    [self.navigationController setNavigationBarHidden:YES];
+    [self setNeedsStatusBarAppearanceUpdate];
+    
+    
+    // listen to taps around the screen, and hide/show overlay views
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc]
+                                   initWithTarget:self
+                                   action:@selector(viewTapped:)];
+    tgr.delegate = self;
+    [self.view addGestureRecognizer:tgr];
+
+    
+    UITapGestureRecognizer *leftArrowTapGesture = [[UITapGestureRecognizer alloc]
+                                                   initWithTarget:self
+                                                   action:@selector(handleArrowTap:)];
+    leftArrowTapGesture.delegate = self;
+    [self.leftArrowImgView addGestureRecognizer:leftArrowTapGesture];
+   
+    
+    UITapGestureRecognizer *rightArrowTapGesture = [[UITapGestureRecognizer alloc]
+                                                    initWithTarget:self
+                                                    action:@selector(handleArrowTap:)];
+    rightArrowTapGesture.delegate = self;
+    [self.rightArrowImgView addGestureRecognizer:rightArrowTapGesture];
+  
+    
+    [self resetArrowsStates];
+    
+    self.archiveOverlay.hidden = YES;
+    
+    [self setupSession];
+    
+    [self.endCallButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+    
+    self.archiveStatusImgView2.hidden = YES;
+    [self adjustArchiveStatusImgView];
+    
+    // application background/foreground monitoring for publish/subscribe video
+    // toggling
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(enteringBackgroundMode:)
+     name:UIApplicationWillResignActiveNotification
+     object:nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(leavingBackgroundMode:)
+     name:UIApplicationDidBecomeActiveNotification
+     object:nil];
+    
 }
 
-- (BOOL)prefersStatusBarHidden
+-(void)adjustArchiveStatusImgView
+{
+    CGPoint pointInViewCoords = [self.archiveOverlay
+                                 convertPoint:self.archiveStatusImgView.frame.origin
+                                 toView:self.view];
+    
+    CGRect frame = self.archiveStatusImgView2.frame;
+    frame.origin = pointInViewCoords;
+    self.archiveStatusImgView2.frame = frame;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
+- (void)viewTapped:(UITapGestureRecognizer *)tgr
+{
+    BOOL isInFullScreen = [[[self topOverlayView].layer
+                            valueForKey:APP_IN_FULL_SCREEN] boolValue];
+    
+    UIInterfaceOrientation orientation =
+    [[UIApplication sharedApplication] statusBarOrientation];
+    
+    if (isInFullScreen) {
+        
+        if (!self.archiveStatusImgView2.isAnimating)
+            self.archiveOverlay.hidden = YES;
+        
+        [self.topOverlayView.layer setValue:[NSNumber numberWithBool:NO]
+                                     forKey:APP_IN_FULL_SCREEN];
+        
+        // Show/Adjust top, bottom, archive, publisher and video container
+        // views according to the orientation
+        if (orientation == UIInterfaceOrientationPortrait ||
+            orientation == UIInterfaceOrientationPortraitUpsideDown) {
+            
+            
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                CGRect frame = _currentSubscriber.view.frame;
+                frame.size.height =
+                self.videoContainerView.frame.size.height;
+                _currentSubscriber.view.frame = frame;
+                
+                frame = self.topOverlayView.frame;
+                frame.origin.y += frame.size.height;
+                self.topOverlayView.frame = frame;
+                
+                frame = self.archiveOverlay.superview.frame;
+                frame.origin.y -= frame.size.height;
+                self.archiveOverlay.superview.frame = frame;
+                
+                [_publisher.view setFrame:
+                 CGRectMake(8,
+                            self.view.frame.size.height -
+                            (PUBLISHER_BAR_HEIGHT +
+                             (self.archiveOverlay.hidden ? 0 :
+                              ARCHIVE_BAR_HEIGHT)
+                             + 8 + PUBLISHER_PREVIEW_HEIGHT),
+                            PUBLISHER_PREVIEW_WIDTH,
+                            PUBLISHER_PREVIEW_HEIGHT)];
+            } completion:^(BOOL finished) {
+                
+            }];
+        }
+        else
+        {
+            
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                CGRect frame = _currentSubscriber.view.frame;
+                frame.size.width =
+                self.videoContainerView.frame.size.width;
+                _currentSubscriber.view.frame = frame;
+                
+                frame = self.topOverlayView.frame;
+                frame.origin.y += frame.size.height;
+                self.topOverlayView.frame = frame;
+                
+                frame = self.bottomOverlayView.frame;
+                if (orientation == UIInterfaceOrientationLandscapeRight) {
+                    frame.origin.x -= frame.size.width;
+                } else {
+                    frame.origin.x += frame.size.width;
+                }
+                
+                self.bottomOverlayView.frame = frame;
+                
+                frame = self.archiveOverlay.frame;
+                frame.origin.y -= frame.size.height;
+                self.archiveOverlay.frame = frame;
+                
+                if (orientation == UIInterfaceOrientationLandscapeRight) {
+                    [_publisher.view setFrame:
+                     CGRectMake(8,
+                                self.view.frame.size.height -
+                                ((self.archiveOverlay.hidden ? 0 :
+                                  ARCHIVE_BAR_HEIGHT) + 8 +
+                                 PUBLISHER_PREVIEW_HEIGHT),
+                                PUBLISHER_PREVIEW_WIDTH,
+                                PUBLISHER_PREVIEW_HEIGHT)];
+                    
+                    self.rightArrowImgView.frame =
+                    CGRectMake(videoContainerView.frame.size.width - 40 -
+                               10 - PUBLISHER_BAR_HEIGHT,
+                               videoContainerView.frame.size.height/2 - 20,
+                               40,
+                               40);
+                    
+                    
+                } else {
+                    [_publisher.view setFrame:
+                     CGRectMake(PUBLISHER_BAR_HEIGHT + 8,
+                                self.view.frame.size.height -
+                                ((self.archiveOverlay.hidden ? 0 :
+                                  ARCHIVE_BAR_HEIGHT) + 8 +
+                                 PUBLISHER_PREVIEW_HEIGHT),
+                                PUBLISHER_PREVIEW_WIDTH,
+                                PUBLISHER_PREVIEW_HEIGHT)];
+                    
+                    self.leftArrowImgView.frame =
+                    CGRectMake(10 + PUBLISHER_BAR_HEIGHT,
+                               videoContainerView.frame.size.height/2 - 20,
+                               40,
+                               40);
+                    
+                }
+            } completion:^(BOOL finished) {
+                
+                
+            }];
+        }
+        
+        // start overlay hide timer
+        self.overlayTimer =
+        [NSTimer scheduledTimerWithTimeInterval:OVERLAY_HIDE_TIME
+                                         target:self
+                                       selector:@selector(overlayTimerAction)
+                                       userInfo:nil
+                                        repeats:NO];
+    }
+    else
+    {
+        [self.topOverlayView.layer setValue:[NSNumber numberWithBool:YES]
+                                     forKey:APP_IN_FULL_SCREEN];
+        
+        // invalidate timer so that it wont hide again
+        [self.overlayTimer invalidate];
+        
+        
+        // Hide/Adjust top, bottom, archive, publisher and video container
+        // views according to the orientation
+        if (orientation == UIInterfaceOrientationPortrait ||
+            orientation == UIInterfaceOrientationPortraitUpsideDown)
+        {
+            
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                CGRect frame = _currentSubscriber.view.frame;
+                // User really tapped (not from willAnimateToration...)
+                if (tgr)
+                {
+                    frame.size.height =
+                    self.videoContainerView.frame.size.height;
+                    _currentSubscriber.view.frame = frame;
+                }
+                
+                frame = self.topOverlayView.frame;
+                frame.origin.y -= frame.size.height;
+                self.topOverlayView.frame = frame;
+                
+                frame = self.archiveOverlay.superview.frame;
+                frame.origin.y += frame.size.height;
+                self.archiveOverlay.superview.frame = frame;
+                
+                
+                [_publisher.view setFrame:
+                 CGRectMake(8,
+                            self.view.frame.size.height -
+                            (8 + PUBLISHER_PREVIEW_HEIGHT),
+                            PUBLISHER_PREVIEW_WIDTH,
+                            PUBLISHER_PREVIEW_HEIGHT)];
+            } completion:^(BOOL finished) {
+            }];
+            
+        }
+        else
+        {
+            
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                CGRect frame = _currentSubscriber.view.frame;
+                frame.size.width =
+                self.videoContainerView.frame.size.width;
+                _currentSubscriber.view.frame = frame;
+                
+                frame = self.topOverlayView.frame;
+                frame.origin.y -= frame.size.height;
+                self.topOverlayView.frame = frame;
+                
+                frame = self.bottomOverlayView.frame;
+                if (orientation == UIInterfaceOrientationLandscapeRight) {
+                    frame.origin.x += frame.size.width;
+                    
+                    self.rightArrowImgView.frame =
+                    CGRectMake(videoContainerView.frame.size.width - 40 - 10,
+                               videoContainerView.frame.size.height/2 - 20,
+                               40,
+                               40);
+                    
+                } else {
+                    frame.origin.x -= frame.size.width;
+                    
+                    self.leftArrowImgView.frame =
+                    CGRectMake(10 ,
+                               videoContainerView.frame.size.height/2 - 20,
+                               40,
+                               40);
+                    
+                }
+                
+                self.bottomOverlayView.frame = frame;
+                
+                frame = self.archiveOverlay.frame;
+                frame.origin.y += frame.size.height;
+                self.archiveOverlay.frame = frame;
+                
+                
+                [_publisher.view setFrame:
+                 CGRectMake(8,
+                            self.view.frame.size.height -
+                            (8 + PUBLISHER_PREVIEW_HEIGHT),
+                            PUBLISHER_PREVIEW_WIDTH,
+                            PUBLISHER_PREVIEW_HEIGHT)];
+            } completion:^(BOOL finished) {
+            }];
+        }
+    }
+    
+    // no need to arrange subscribers when it comes from willRotate
+    if (tgr)
+    {
+        [self reArrangeSubscribers];
+    }
+    
+}
+
+- (void)overlayTimerAction
+{
+    BOOL isInFullScreen =   [[[self topOverlayView].layer
+                              valueForKey:APP_IN_FULL_SCREEN] boolValue];
+    
+    // if any button is in highlighted state, we ignore hide action
+    if (!self.cameraToggleButton.highlighted &&
+        !self.audioPubUnpubButton.highlighted &&
+        !self.audioPubUnpubButton.highlighted) {
+        // Hide views
+        if (!isInFullScreen) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self viewTapped:[[self.view gestureRecognizers]
+                                  objectAtIndex:0]];
+            });
+            
+            //[[[self.view gestureRecognizers] objectAtIndex:0] sendActionsForControlEvents:UIControlEventTouchUpInside];
+            
+        }
+    } else {
+        // start the timer again for next time
+        self.overlayTimer =
+        [NSTimer scheduledTimerWithTimeInterval:OVERLAY_HIDE_TIME
+                                         target:self
+                                       selector:@selector(overlayTimerAction)
+                                       userInfo:nil
+                                        repeats:NO];
+    }
+}
+
+- (BOOL)shouldAutorotate
 {
     return YES;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:
-(UIInterfaceOrientation)interfaceOrientation
+- (NSUInteger)supportedInterfaceOrientations
 {
-    // Return YES for supported orientations
-    if (UIUserInterfaceIdiomPhone == [[UIDevice currentDevice]
-                                      userInterfaceIdiom])
-    {
-        return NO;
-    } else {
-        return YES;
-    }
+    return UIInterfaceOrientationMaskAll;
 }
-#pragma mark - OpenTok methods
 
-/** 
- * Asynchronously begins the session connect process. Some time later, we will
- * expect a delegate method to call us back with the results of this action.
- */
-- (void)doConnect
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
 {
-    OTError *error = nil;
+    BOOL isInFullScreen =   [[[self topOverlayView].layer
+                              valueForKey:APP_IN_FULL_SCREEN] boolValue];
+    // we already adjusted in willrotate for full screen
+    if (isInFullScreen)
+        return;
+    [self adjustArchiveStatusImgView];
+}
+- (void)willAnimateRotationToInterfaceOrientation:
+(UIInterfaceOrientation)toInterfaceOrientation
+                                         duration:(NSTimeInterval)duration
+{
+    [super willRotateToInterfaceOrientation:
+     toInterfaceOrientation duration:duration];
     
-    [_session connectWithToken:kToken error:&error];
-    if (error)
+    BOOL isInFullScreen =   [[[self topOverlayView].layer
+                              valueForKey:APP_IN_FULL_SCREEN] boolValue];
+    
+    // hide overlay views adjust positions based on orietnation and then
+    // hide them again
+    if (isInFullScreen) {
+        // hide all bars to before rotate
+        self.topOverlayView.hidden = YES;
+        self.bottomOverlayView.hidden = YES;
+    }
+    
+    int connectionsCount = [allConnectionsIds count];
+    UIInterfaceOrientation orientation = toInterfaceOrientation;
+    
+    // adjust overlay views
+    if (orientation == UIInterfaceOrientationPortrait ||
+        orientation == UIInterfaceOrientationPortraitUpsideDown) {
+        
+        [videoContainerView setFrame:
+         CGRectMake(0,
+                    0,
+                    self.view.frame.size.width,
+                    self.view.frame.size.height)];
+        
+        [_publisher.view setFrame:
+         CGRectMake(8,
+                    self.view.frame.size.height -
+                    (isInFullScreen ? PUBLISHER_PREVIEW_HEIGHT + 8 :
+                     (PUBLISHER_BAR_HEIGHT +
+                      (self.archiveOverlay.hidden ? 0 :
+                       ARCHIVE_BAR_HEIGHT) + 8 +
+                      PUBLISHER_PREVIEW_HEIGHT)),
+                    PUBLISHER_PREVIEW_WIDTH,
+                    PUBLISHER_PREVIEW_HEIGHT)];
+        
+        
+        UIView *containerView = self.archiveOverlay.superview;
+        containerView.frame =
+        CGRectMake(0,
+                   self.view.frame.size.height -
+                   PUBLISHER_ARCHIVE_CONTAINER_HEIGHT,
+                   self.view.frame.size.width,
+                   PUBLISHER_ARCHIVE_CONTAINER_HEIGHT);
+        
+        [self.bottomOverlayView removeFromSuperview];
+        [containerView addSubview:self.bottomOverlayView];
+        
+        self.bottomOverlayView.frame =
+        CGRectMake(0,
+                   containerView.frame.size.height - PUBLISHER_BAR_HEIGHT,
+                   containerView.frame.size.width,
+                   PUBLISHER_BAR_HEIGHT);
+        
+        // Archiving overlay
+        self.archiveOverlay.frame =
+        CGRectMake(0,
+                   0,
+                   self.view.frame.size.width,
+                   ARCHIVE_BAR_HEIGHT);
+        
+        self.topOverlayView.frame =
+        CGRectMake(0,
+                   0,
+                   self.view.frame.size.width,
+                   self.topOverlayView.frame.size.height);
+        
+        // Camera button
+        self.cameraToggleButton.frame =
+        CGRectMake(0, 0, 90, PUBLISHER_BAR_HEIGHT);
+        
+        //adjust border layer
+        CALayer *borderLayer = [[self.cameraToggleButton.layer sublayers]
+                                objectAtIndex:1];
+        borderLayer.frame =
+        CGRectMake(-1,
+                   -1,
+                   CGRectGetWidth(self.cameraToggleButton.frame),
+                   CGRectGetHeight(self.cameraToggleButton.frame) + 2);
+        
+        // adjust call button
+        self.endCallButton.frame =
+        CGRectMake((self.bottomOverlayView.frame.size.width / 2) - (140 / 2),
+                   0,
+                   140,
+                   PUBLISHER_BAR_HEIGHT);
+        
+        // Mic button
+        self.audioPubUnpubButton.frame =
+        CGRectMake(self.bottomOverlayView.frame.size.width - 90,
+                   0,
+                   90,
+                   PUBLISHER_BAR_HEIGHT);
+        
+        borderLayer = [[self.audioPubUnpubButton.layer sublayers]
+                       objectAtIndex:1];
+        borderLayer.frame =
+        CGRectMake(-1,
+                   -1,
+                   CGRectGetWidth(self.audioPubUnpubButton.frame) + 5,
+                   CGRectGetHeight(self.audioPubUnpubButton.frame) + 2);
+        
+        self.leftArrowImgView.frame =
+        CGRectMake(10,
+                   videoContainerView.frame.size.height/2 - 20,
+                   40,
+                   40);
+        
+        self.rightArrowImgView.frame =
+        CGRectMake(videoContainerView.frame.size.width - 40 - 10,
+                   videoContainerView.frame.size.height/2 - 20,
+                   40,
+                   40);
+        
+        [videoContainerView setContentSize:
+         CGSizeMake(videoContainerView.frame.size.width * (connectionsCount ),
+                    videoContainerView.frame.size.height)];
+    }
+    else if (orientation == UIInterfaceOrientationLandscapeLeft ||
+             orientation == UIInterfaceOrientationLandscapeRight) {
+        
+        
+        if (orientation == UIInterfaceOrientationLandscapeRight) {
+            
+            [videoContainerView setFrame:
+             CGRectMake(0,
+                        0,
+                        self.view.frame.size.width,
+                        self.view.frame.size.height)];
+            
+            [_publisher.view setFrame:
+             CGRectMake(8,
+                        self.view.frame.size.height -
+                        ((self.archiveOverlay.hidden ? 0 : ARCHIVE_BAR_HEIGHT)
+                         + 8 + PUBLISHER_PREVIEW_HEIGHT),
+                        PUBLISHER_PREVIEW_WIDTH,
+                        PUBLISHER_PREVIEW_HEIGHT)];
+            
+            UIView *containerView = self.archiveOverlay.superview;
+            containerView.frame =
+            CGRectMake(0,
+                       self.view.frame.size.height - ARCHIVE_BAR_HEIGHT,
+                       self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
+                       ARCHIVE_BAR_HEIGHT);
+            
+            // Archiving overlay
+            self.archiveOverlay.frame =
+            CGRectMake(0,
+                       containerView.frame.size.height - ARCHIVE_BAR_HEIGHT,
+                       containerView.frame.size.width ,
+                       ARCHIVE_BAR_HEIGHT);
+            
+            [self.bottomOverlayView removeFromSuperview];
+            [self.view addSubview:self.bottomOverlayView];
+            
+            self.bottomOverlayView.frame =
+            CGRectMake(self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
+                       0,
+                       PUBLISHER_BAR_HEIGHT,
+                       self.view.frame.size.height);
+            
+            // Top overlay
+            self.topOverlayView.frame =
+            CGRectMake(0,
+                       0,
+                       self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
+                       self.topOverlayView.frame.size.height);
+            
+            self.leftArrowImgView.frame =
+            CGRectMake(10,
+                       videoContainerView.frame.size.height/2 - 20,
+                       40,
+                       40);
+            
+            self.rightArrowImgView.frame =
+            CGRectMake(self.view.frame.size.width - 40 - 10 -
+                       PUBLISHER_BAR_HEIGHT,
+                       videoContainerView.frame.size.height/2 - 20,
+                       40,
+                       40);
+            
+            
+            
+        }
+        else
+        {
+            [videoContainerView setFrame:
+             CGRectMake(0,
+                        0,
+                        self.view.frame.size.width ,
+                        self.view.frame.size.height)];
+            
+            [_publisher.view setFrame:
+             CGRectMake(8 + PUBLISHER_BAR_HEIGHT,
+                        self.view.frame.size.height -
+                        ((self.archiveOverlay.hidden ? 0 : ARCHIVE_BAR_HEIGHT)
+                         + 8 + PUBLISHER_PREVIEW_HEIGHT),
+                        PUBLISHER_PREVIEW_WIDTH,
+                        PUBLISHER_PREVIEW_HEIGHT)];
+            
+            
+            UIView *containerView = self.archiveOverlay.superview;
+            containerView.frame =
+            CGRectMake(PUBLISHER_BAR_HEIGHT,
+                       self.view.frame.size.height - ARCHIVE_BAR_HEIGHT,
+                       self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
+                       ARCHIVE_BAR_HEIGHT);
+            
+            [self.bottomOverlayView removeFromSuperview];
+            [self.view addSubview:self.bottomOverlayView];
+            
+            self.bottomOverlayView.frame =
+            CGRectMake(0,
+                       0,
+                       PUBLISHER_BAR_HEIGHT,
+                       self.view.frame.size.height);
+            
+            // Archiving overlay
+            self.archiveOverlay.frame =
+            CGRectMake(0,
+                       containerView.frame.size.height - ARCHIVE_BAR_HEIGHT,
+                       containerView.frame.size.width ,
+                       ARCHIVE_BAR_HEIGHT);
+            
+            self.topOverlayView.frame =
+            CGRectMake(PUBLISHER_BAR_HEIGHT,
+                       0,
+                       self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
+                       self.topOverlayView.frame.size.height);
+            
+            self.leftArrowImgView.frame =
+            CGRectMake(10 + PUBLISHER_BAR_HEIGHT,
+                       videoContainerView.frame.size.height/2 - 20,
+                       40,
+                       40);
+            
+            self.rightArrowImgView.frame =
+            CGRectMake(self.view.frame.size.width - 40 - 10 ,
+                       videoContainerView.frame.size.height/2 - 20,
+                       40,
+                       40);
+            
+        }
+        
+        // Mic button
+        CGRect frame =  self.audioPubUnpubButton.frame;
+        frame.origin.x = 0;
+        frame.origin.y = 0;
+        frame.size.width = PUBLISHER_BAR_HEIGHT;
+        frame.size.height = 90;
+        
+        self.audioPubUnpubButton.frame = frame;
+        
+        // vertical border
+        frame.origin.x = -1;
+        frame.origin.y = -1;
+        frame.size.width = 55;
+        CALayer *borderLayer = [[self.audioPubUnpubButton.layer sublayers]
+                                objectAtIndex:1];
+        borderLayer.frame = frame;
+        
+        // Camera button
+        frame =  self.cameraToggleButton.frame;
+        frame.origin.x = 0;
+        frame.origin.y = self.bottomOverlayView.frame.size.height - 100;
+        frame.size.width = PUBLISHER_BAR_HEIGHT;
+        frame.size.height = 90;
+        
+        self.cameraToggleButton.frame = frame;
+        
+        frame.origin.x = -1;
+        frame.origin.y = 0;
+        frame.size.height = 90;
+        frame.size.width = 55;
+        
+        borderLayer = [[self.cameraToggleButton.layer sublayers]
+                       objectAtIndex:1];
+        borderLayer.frame =
+        CGRectMake(0,
+                   1,
+                   CGRectGetWidth(self.cameraToggleButton.frame) ,
+                   1
+                   );
+        
+        // call button
+        frame =  self.endCallButton.frame;
+        frame.origin.x = 0;
+        frame.origin.y = (self.bottomOverlayView.frame.size.height / 2) -
+        (100 / 2);
+        frame.size.width = PUBLISHER_BAR_HEIGHT;
+        frame.size.height = 100;
+        
+        self.endCallButton.frame = frame;
+        
+        [videoContainerView setContentSize:
+         CGSizeMake(videoContainerView.frame.size.width * connectionsCount,
+                    videoContainerView.frame.size.height)];
+    }
+    
+    if (isInFullScreen) {
+        
+        // call viewTapped to hide the views out of the screen.
+        [[self topOverlayView].layer setValue:[NSNumber numberWithBool:NO]
+                                       forKey:APP_IN_FULL_SCREEN];
+        [self adjustArchiveStatusImgView];
+        [self viewTapped:nil];
+        [[self topOverlayView].layer setValue:[NSNumber numberWithBool:YES]
+                                       forKey:APP_IN_FULL_SCREEN];
+        
+        self.topOverlayView.hidden = NO;
+        self.bottomOverlayView.hidden = NO;
+    }
+    
+    // re arrange subscribers
+    [self reArrangeSubscribers];
+    
+    // set video container offset to current subscriber
+    [videoContainerView setContentOffset:
+     CGPointMake(_currentSubscriber.view.tag *
+                 videoContainerView.frame.size.width, 0)
+                                animated:YES];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    
+    // current subscriber
+    int currentPage = (int)(videoContainerView.contentOffset.x /
+                            videoContainerView.frame.size.width);
+    
+    if (currentPage < [allConnectionsIds count]) {
+        // show current scrolled subscriber
+        NSString *connectionId = [allConnectionsIds objectAtIndex:currentPage];
+        NSLog(@"show as current subscriber %@",connectionId);
+        [self showAsCurrentSubscriber:[allSubscribers
+                                       objectForKey:connectionId]];
+    }
+    [self resetArrowsStates];
+}
+
+- (void)showAsCurrentSubscriber:(OTSubscriber *)subscriber
+{
+    // scroll view tapping bug
+    if(subscriber == _currentSubscriber)
+        return;
+    
+    // unsubscribe currently running video
+    _currentSubscriber.subscribeToVideo = NO;
+    
+    // update as current subscriber
+    _currentSubscriber = subscriber;
+    self.userNameLabel.text = _currentSubscriber.stream.name;
+    
+    // subscribe to new subscriber
+    _currentSubscriber.subscribeToVideo = YES;
+    
+    self.audioSubUnsubButton.selected = !_currentSubscriber.subscribeToAudio;
+}
+
+- (void)setupSession
+{
+    //setup one time session
+    if (_session) {
+        _session = nil;
+    }
+    
+    _session = [[OTSession alloc] initWithApiKey:kApiKey
+                                       sessionId:kSessionId
+                                        delegate:self];
+    [_session connectWithToken:kToken error:nil];
+    [self setupPublisher];
+    
+}
+
+- (void)setupPublisher
+{
+    // create one time publisher and style publisher
+    _publisher = [[OTPublisher alloc]
+                  initWithDelegate:self
+                  name:[[UIDevice currentDevice] name]];
+    
+    [self willAnimateRotationToInterfaceOrientation:
+     [[UIApplication sharedApplication] statusBarOrientation] duration:1.0];
+    
+    [self.view addSubview:_publisher.view];
+    
+    // add pan gesture to publisher
+    UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
+                                   initWithTarget:self
+                                   action:@selector(handlePan:)];
+    [_publisher.view addGestureRecognizer:pgr];
+    pgr.delegate = self;
+    _publisher.view.userInteractionEnabled = YES;
+
+}
+
+- (IBAction)handlePan:(UIPanGestureRecognizer *)recognizer
+{
+    
+    CGPoint translation = [recognizer translationInView:_publisher.view];
+    CGRect recognizerFrame = recognizer.view.frame;
+    recognizerFrame.origin.x += translation.x;
+    recognizerFrame.origin.y += translation.y;
+    
+    
+    if (CGRectContainsRect(self.view.bounds, recognizerFrame)) {
+        recognizer.view.frame = recognizerFrame;
+    }
+    else {
+        if (recognizerFrame.origin.y < self.view.bounds.origin.y) {
+            recognizerFrame.origin.y = 0;
+        }
+        else if (recognizerFrame.origin.y + recognizerFrame.size.height > self.view.bounds.size.height) {
+            recognizerFrame.origin.y = self.view.bounds.size.height - recognizerFrame.size.height;
+        }
+        
+        if (recognizerFrame.origin.x < self.view.bounds.origin.x) {
+            recognizerFrame.origin.x = 0;
+        }
+        else if (recognizerFrame.origin.x + recognizerFrame.size.width > self.view.bounds.size.width) {
+            recognizerFrame.origin.x = self.view.bounds.size.width - recognizerFrame.size.width;
+        }
+    }
+    [recognizer setTranslation:CGPointMake(0, 0) inView:_publisher.view];
+}
+
+- (void)cycleSubscriberViewForward:(BOOL)forward {
+    int mod = 1;
+    
+    if (!forward) {
+        mod = -1;
+    }
+    
+    _currentSubscriberIndex =
+    (_currentSubscriberIndex + mod) % allConnectionsIds.count;
+    
+    OTSubscriber *nextSubscriber =
+    [allSubscribers objectForKey:
+     [allConnectionsIds objectAtIndex:_currentSubscriberIndex]];
+    
+    [self showAsCurrentSubscriber:nextSubscriber];
+    
+    [videoContainerView setContentOffset:
+     CGPointMake(_currentSubscriber.view.frame.origin.x, 0) animated:YES];
+    
+    [self resetArrowsStates];
+    
+}
+
+- (void)handleArrowTap:(UIPanGestureRecognizer *)recognizer
+{ // if there are no subscribers, simply return
+    if ([allSubscribers count] == 0)
+        return;
+    CGPoint touchPoint = [recognizer locationInView:self.leftArrowImgView];
+    if ([self.leftArrowImgView pointInside:touchPoint withEvent:nil])
     {
-        [self showAlert:[error localizedDescription]];
+        [self cycleSubscriberViewForward:NO];
+    } else {
+        [self cycleSubscriberViewForward:YES];
     }
 }
 
-/**
- * Sets up an instance of OTPublisher to use with this session. OTPubilsher
- * binds to the device camera and microphone, and will provide A/V streams
- * to the OpenTok session.
- */
-- (void)doPublish
+- (void)resetArrowsStates
 {
-    _publisher =
-    [[OTPublisher alloc] initWithDelegate:self
-                                     name:[[UIDevice currentDevice] name]];
-   
+    
+    if (!_currentSubscriber)
+    {
+        self.leftArrowImgView.image =
+        [UIImage imageNamed:@"icon_arrowLeft_disabled-28.png"];
+        self.leftArrowImgView.userInteractionEnabled = NO;
+        
+        self.rightArrowImgView.image =
+        [UIImage imageNamed:@"icon_arrowRight_disabled-28.png"];
+        self.rightArrowImgView.userInteractionEnabled = NO;
+        return;
+    }
+    
+    if (_currentSubscriber.view.tag == 0)
+    {
+        self.leftArrowImgView.image =
+        [UIImage imageNamed:@"icon_arrowLeft_disabled-28.png"];
+        self.leftArrowImgView.userInteractionEnabled = NO;
+    } else
+    {
+        self.leftArrowImgView.image =
+        [UIImage imageNamed:@"icon_arrowLeft_enabled-28.png"];
+        self.leftArrowImgView.userInteractionEnabled = YES;
+    }
+    
+    if (_currentSubscriber.view.tag == [allConnectionsIds count] - 1)
+    {
+        self.rightArrowImgView.image =
+        [UIImage imageNamed:@"icon_arrowRight_disabled-28.png"];
+        self.rightArrowImgView.userInteractionEnabled = NO;
+    } else
+    {
+        self.rightArrowImgView.image =
+        [UIImage imageNamed:@"icon_arrowRight_enabled-28.png"];
+        self.rightArrowImgView.userInteractionEnabled = YES;
+    }
+}
+#pragma mark - OpenTok Session
+- (void)session:(OTSession *)session
+connectionDestroyed:(OTConnection *)connection
+{
+    NSLog(@"connectionDestroyed: %@", connection);
+}
+
+- (void)session:(OTSession *)session
+connectionCreated:(OTConnection *)connection
+{
+    NSLog(@"addConnection: %@", connection);
+}
+
+- (void)sessionDidConnect:(OTSession *)session
+{
+    // now publish
     OTError *error = nil;
     [_session publish:_publisher error:&error];
     if (error)
     {
         [self showAlert:[error localizedDescription]];
     }
-    
-    [self.view addSubview:_publisher.view];
-    [_publisher.view setFrame:CGRectMake(0, 0, widgetWidth, widgetHeight)];
 }
 
-/**
- * Cleans up the publisher and its view. At this point, the publisher should not
- * be attached to the session any more.
- */
-- (void)cleanupPublisher {
+- (void)reArrangeSubscribers
+{
+    
+    CGFloat containerWidth = CGRectGetWidth(videoContainerView.bounds);
+    CGFloat containerHeight = CGRectGetHeight(videoContainerView.bounds);
+    int count = [allConnectionsIds count];
+    
+    // arrange all subscribers horizontally one by one.
+    for (int i = 0; i < [allConnectionsIds count]; i++)
+    {
+        OTSubscriber *subscriber = [allSubscribers
+                                    valueForKey:[allConnectionsIds
+                                                 objectAtIndex:i]];
+        subscriber.view.tag = i;
+        [subscriber.view setFrame:
+         CGRectMake(i * CGRectGetWidth(videoContainerView.bounds),
+                    0,
+                    containerWidth,
+                    containerHeight)];
+        [videoContainerView addSubview:subscriber.view];
+    }
+    
+    [videoContainerView setContentSize:
+     CGSizeMake(videoContainerView.frame.size.width * (count ),
+                videoContainerView.frame.size.height )];
+    [videoContainerView setContentOffset:
+     CGPointMake(_currentSubscriber.view.frame.origin.x, 0) animated:YES];
+}
+
+- (void)sessionDidDisconnect:(OTSession *)session
+{
+    
+    // remove all subscriber views from video container
+    for (int i = 0; i < [allConnectionsIds count]; i++)
+    {
+        OTSubscriber *subscriber = [allSubscribers valueForKey:
+                                    [allConnectionsIds objectAtIndex:i]];
+        [subscriber.view removeFromSuperview];
+    }
+    
     [_publisher.view removeFromSuperview];
+    
+    [allSubscribers removeAllObjects];
+    [allConnectionsIds removeAllObjects];
+    [allStreams removeAllObjects];
+    
+    _currentSubscriber = NULL;
     _publisher = nil;
-    // this is a good place to notify the end-user that publishing has stopped.
-}
-
-/**
- * Instantiates a subscriber for the given stream and asynchronously begins the
- * process to begin receiving A/V content for this stream. Unlike doPublish, 
- * this method does not add the subscriber to the view hierarchy. Instead, we 
- * add the subscriber only after it has connected and begins receiving data.
- */
-- (void)doSubscribe:(OTStream*)stream
-{
-    _subscriber = [[OTSubscriber alloc] initWithStream:stream delegate:self];
     
-    OTError *error = nil;
-    [_session subscribe:_subscriber error:&error];
-    if (error)
+    if (self.archiveStatusImgView2.isAnimating)
     {
-        [self showAlert:[error localizedDescription]];
+        [self stopArchiveAnimation];
     }
-}
-
-/**
- * Cleans the subscriber from the view hierarchy, if any.
- * NB: You do *not* have to call unsubscribe in your controller in response to
- * a streamDestroyed event. Any subscribers (or the publisher) for a stream will
- * be automatically removed from the session during cleanup of the stream.
- */
-- (void)cleanupSubscriber
-{
-    [_subscriber.view removeFromSuperview];
-    _subscriber = nil;
-}
-
-# pragma mark - OTSession delegate callbacks
-
-- (void)sessionDidConnect:(OTSession*)session
-{
-    NSLog(@"sessionDidConnect (%@)", session.sessionId);
-    
-    // Step 2: We have successfully connected, now instantiate a publisher and
-    // begin pushing A/V streams into OpenTok.
-    [self doPublish];
-}
-
-- (void)sessionDidDisconnect:(OTSession*)session
-{
-    NSString* alertMessage =
-    [NSString stringWithFormat:@"Session disconnected: (%@)",
-     session.sessionId];
-    NSLog(@"sessionDidDisconnect (%@)", alertMessage);
-}
-
-
-- (void)session:(OTSession*)mySession
-  streamCreated:(OTStream *)stream
-{
-    NSLog(@"session streamCreated (%@)", stream.streamId);
-    
-    // Step 3a: (if NO == subscribeToSelf): Begin subscribing to a stream we
-    // have seen on the OpenTok session.
-    if (nil == _subscriber && !subscribeToSelf)
-    {
-        [self doSubscribe:stream];
-    }
-}
-
-- (void)session:(OTSession*)session
-streamDestroyed:(OTStream *)stream
-{
-    NSLog(@"session streamDestroyed (%@)", stream.streamId);
-    
-    if ([_subscriber.stream.streamId isEqualToString:stream.streamId])
-    {
-        [self cleanupSubscriber];
-    }
-}
-
-- (void)  session:(OTSession *)session
-connectionCreated:(OTConnection *)connection
-{
-    NSLog(@"session connectionCreated (%@)", connection.connectionId);
+    [self resetArrowsStates];
 }
 
 - (void)    session:(OTSession *)session
-connectionDestroyed:(OTConnection *)connection
+    streamDestroyed:(OTStream *)stream
 {
-    NSLog(@"session connectionDestroyed (%@)", connection.connectionId);
-    if ([_subscriber.stream.connection.connectionId
-         isEqualToString:connection.connectionId])
+    NSLog(@"streamDestroyed %@", stream.connection.connectionId);
+    
+    // get subscriber for this stream
+    OTSubscriber *subscriber = [allSubscribers objectForKey:
+                                stream.connection.connectionId];
+    
+    // remove from superview
+    [subscriber.view removeFromSuperview];
+    
+    [allSubscribers removeObjectForKey:stream.connection.connectionId];
+    [allConnectionsIds removeObject:stream.connection.connectionId];
+    
+    _currentSubscriber = nil;
+    [self reArrangeSubscribers];
+    
+    // show first subscriber
+    if ([allConnectionsIds count] > 0) {
+        NSString *firstConnection = [allConnectionsIds objectAtIndex:0];
+        [self showAsCurrentSubscriber:[allSubscribers
+                                       objectForKey:firstConnection]];
+    }
+    
+    [self resetArrowsStates];
+}
+
+- (void)createSubscriber:(OTStream *)stream
+{
+    
+    if ([[UIApplication sharedApplication] applicationState] ==
+        UIApplicationStateBackground ||
+        [[UIApplication sharedApplication] applicationState] ==
+        UIApplicationStateInactive)
     {
-        [self cleanupSubscriber];
+        [backgroundConnectedStreams addObject:stream];
+    } else
+    {
+        // create subscriber
+        OTSubscriber *subscriber = [[OTSubscriber alloc]
+                                    initWithStream:stream delegate:self];
+        
+        // subscribe now
+        OTError *error = nil;
+        [_session subscribe:subscriber error:&error];
+        if (error)
+        {
+            [self showAlert:[error localizedDescription]];
+        }
+        
     }
 }
 
-- (void) session:(OTSession*)session
-didFailWithError:(OTError*)error
+- (void)subscriberDidConnectToStream:(OTSubscriberKit *)subscriber
 {
-    NSLog(@"didFailWithError: (%@)", error);
+    NSLog(@"subscriberDidConnectToStream %@", subscriber.stream.name);
+    
+    // create subscriber
+    OTSubscriber *sub = (OTSubscriber *)subscriber;
+    [allSubscribers setObject:subscriber forKey:sub.stream.connection.connectionId];
+    [allConnectionsIds addObject:sub.stream.connection.connectionId];
+    
+    // set subscriber position and size
+    CGFloat containerWidth = CGRectGetWidth(videoContainerView.bounds);
+    CGFloat containerHeight = CGRectGetHeight(videoContainerView.bounds);
+    int count = [allConnectionsIds count] - 1;
+    [sub.view setFrame:
+     CGRectMake(count *
+                CGRectGetWidth(videoContainerView.bounds),
+                0,
+                containerWidth,
+                containerHeight)];
+    
+    sub.view.tag = count;
+    
+    // add to video container view
+    [videoContainerView insertSubview:sub.view
+                         belowSubview:_publisher.view];
+    
+    
+    // default subscribe video to the first subscriber only
+    if (!_currentSubscriber) {
+        [self showAsCurrentSubscriber:(OTSubscriber *)subscriber];
+    } else {
+        subscriber.subscribeToVideo = NO;
+    }
+    
+    // set scrollview content width based on number of subscribers connected.
+    [videoContainerView setContentSize:
+     CGSizeMake(videoContainerView.frame.size.width * (count + 1),
+                videoContainerView.frame.size.height - 18)];
+    
+    [allStreams setObject:sub.stream forKey:sub.stream.connection.connectionId];
+    
+    [self resetArrowsStates];
+  
 }
-
-# pragma mark - OTSubscriber delegate callbacks
-
-- (void)subscriberDidConnectToStream:(OTSubscriberKit*)subscriber
-{
-    NSLog(@"subscriberDidConnectToStream (%@)",
-          subscriber.stream.connection.connectionId);
-    assert(_subscriber == subscriber);
-    [_subscriber.view setFrame:CGRectMake(0, widgetHeight, widgetWidth,
-                                         widgetHeight)];
-    [self.view addSubview:_subscriber.view];
-}
-
-- (void)subscriber:(OTSubscriberKit*)subscriber
-  didFailWithError:(OTError*)error
-{
-    NSLog(@"subscriber %@ didFailWithError %@",
-          subscriber.stream.streamId,
-          error);
-}
-
-# pragma mark - OTPublisher delegate callbacks
 
 - (void)publisher:(OTPublisherKit *)publisher
     streamCreated:(OTStream *)stream
 {
-    // Step 3b: (if YES == subscribeToSelf): Our own publisher is now visible to
-    // all participants in the OpenTok session. We will attempt to subscribe to
-    // our own stream. Expect to see a slight delay in the subscriber video and
-    // an echo of the audio coming from the device microphone.
-    if (nil == _subscriber && subscribeToSelf)
-    {
-        [self doSubscribe:stream];
-    }
+    // create self subscriber
+    [self createSubscriber:stream];
 }
 
-- (void)publisher:(OTPublisherKit*)publisher
-  streamDestroyed:(OTStream *)stream
+- (void)  session:(OTSession *)mySession
+    streamCreated:(OTStream *)stream
 {
-    if ([_subscriber.stream.streamId isEqualToString:stream.streamId])
-    {
-        [self cleanupSubscriber];
-    }
-    
-    [self cleanupPublisher];
+    // create remote subscriber
+    [self createSubscriber:stream];
 }
 
-- (void)publisher:(OTPublisherKit*)publisher
- didFailWithError:(OTError*) error
+- (void)session:(OTSession *)session didFailWithError:(OTError *)error
+{
+    NSLog(@"sessionDidFail");
+    [self showAlert:
+     [NSString stringWithFormat:@"There was an error connecting to session %@",
+      session.sessionId]];
+    [self endCallAction:nil];
+}
+
+- (void)publisher:(OTPublisher *)publisher didFailWithError:(OTError *)error
 {
     NSLog(@"publisher didFailWithError %@", error);
-    [self cleanupPublisher];
+    [self showAlert:[NSString stringWithFormat:
+                     @"There was an error publishing."]];
+    [self endCallAction:nil];
+}
+
+- (void)subscriber:(OTSubscriber *)subscriber didFailWithError:(OTError *)error
+{
+    NSLog(@"subscriber could not connect to stream");
+}
+
+#pragma mark - Helper Methods
+- (IBAction)endCallAction:(UIButton *)button
+{
+    if (_session && _session.sessionConnectionStatus ==
+        OTSessionConnectionStatusConnected) {
+        // disconnect session
+        NSLog(@"disconnecting....");
+        [_session disconnect:nil];
+        return;
+    }
 }
 
 - (void)showAlert:(NSString *)string
 {
     // show alertview on main UI
-	dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"OTError"
-                                                         message:string
-                                                        delegate:self
-                                               cancelButtonTitle:@"OK"
-                                               otherButtonTitles:nil] ;
-        [alert show];
-    });
+  
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Other Interactions
+- (IBAction)toggleAudioSubscribe:(id)sender
+{
+    if (_currentSubscriber.subscribeToAudio == YES) {
+        _currentSubscriber.subscribeToAudio = NO;
+        self.audioSubUnsubButton.selected = YES;
+    } else {
+        _currentSubscriber.subscribeToAudio = YES;
+        self.audioSubUnsubButton.selected = NO;
+    }
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]
+     removeObserver:self
+     name:UIApplicationWillResignActiveNotification
+     object:nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     removeObserver:self
+     name:UIApplicationDidBecomeActiveNotification
+     object:nil];
+
+}
+
+- (IBAction)toggleCameraPosition:(id)sender
+{
+    if (_publisher.cameraPosition == AVCaptureDevicePositionBack) {
+        _publisher.cameraPosition = AVCaptureDevicePositionFront;
+        self.cameraToggleButton.selected = NO;
+        self.cameraToggleButton.highlighted = NO;
+    } else if (_publisher.cameraPosition == AVCaptureDevicePositionFront) {
+        _publisher.cameraPosition = AVCaptureDevicePositionBack;
+        self.cameraToggleButton.selected = YES;
+        self.cameraToggleButton.highlighted = YES;
+    }
+}
+
+- (IBAction)toggleAudioPublish:(id)sender
+{
+    if (_publisher.publishAudio == YES) {
+        _publisher.publishAudio = NO;
+        self.audioPubUnpubButton.selected = YES;
+    } else {
+        _publisher.publishAudio = YES;
+        self.audioPubUnpubButton.selected = NO;
+    }
+}
+
+- (void)startArchiveAnimation
+{
+    
+    if (self.archiveOverlay.hidden)
+    {
+        self.archiveOverlay.hidden = NO;
+        CGRect frame = _publisher.view.frame;
+        frame.origin.y -= ARCHIVE_BAR_HEIGHT;
+        _publisher.view.frame = frame;
+    }
+    BOOL isInFullScreen = [[[self topOverlayView].layer
+                            valueForKey:APP_IN_FULL_SCREEN] boolValue];
+    
+    //show UI if it is in full screen
+    if (isInFullScreen)
+    {
+        [self viewTapped:[self.view.gestureRecognizers objectAtIndex:0]];
+    }
+    
+    self.archiveStatusImgView.hidden = YES;
+    self.archiveStatusImgView2.hidden = NO;
+    
+    // set animation images
+    self.archiveStatusLbl.text = @"Archiving call";
+    UIImage *imageOne = [UIImage imageNamed:@"archiving_on-5.png"];
+    UIImage *imageTwo = [UIImage imageNamed:@"archiving_pulse-15.png"];
+    NSArray *imagesArray =
+    [NSArray arrayWithObjects:imageOne, imageTwo, nil];
+    self.archiveStatusImgView2.animationImages = imagesArray;
+    self.archiveStatusImgView2.animationDuration = 1.0f;
+    self.archiveStatusImgView2.animationRepeatCount = 0;
+    [self.archiveStatusImgView2 startAnimating];
+    
+}
+
+- (void)stopArchiveAnimation
+{
+    [self.archiveStatusImgView2 stopAnimating];
+    self.archiveStatusLbl.text = @"Archiving off";
+    self.archiveStatusImgView2.image =
+    [UIImage imageNamed:@"archiving_off-Small.png"];
+    
+    self.archiveStatusImgView.hidden = NO;
+    self.archiveStatusImgView2.hidden = YES;
+    
+    BOOL isInFullScreen = [[[self topOverlayView].layer
+                            valueForKey:APP_IN_FULL_SCREEN] boolValue];
+    if (!isInFullScreen)
+    {
+        [_publisher.view setFrame:
+         CGRectMake(8,
+                    self.view.frame.size.height -
+                    (PUBLISHER_BAR_HEIGHT +
+                     (self.archiveOverlay.hidden ? 0 :
+                      ARCHIVE_BAR_HEIGHT)
+                     + 8 + PUBLISHER_PREVIEW_HEIGHT),
+                    PUBLISHER_PREVIEW_WIDTH,
+                    PUBLISHER_PREVIEW_HEIGHT)];
+    }
+}
+
+- (void)enteringBackgroundMode:(NSNotification*)notification
+{
+    _publisher.publishVideo = NO;
+    _currentSubscriber.subscribeToVideo = NO;
+}
+
+- (void)leavingBackgroundMode:(NSNotification*)notification
+{
+    _publisher.publishVideo = YES;
+    _currentSubscriber.subscribeToVideo = YES;
+    
+    //now subscribe to any background connected streams
+    for (OTStream *stream in backgroundConnectedStreams)
+    {
+        // create subscriber
+        OTSubscriber *subscriber = [[OTSubscriber alloc]
+                                    initWithStream:stream delegate:self];
+        // subscribe now
+        OTError *error = nil;
+        [_session subscribe:subscriber error:&error];
+        if (error)
+        {
+            [self showAlert:[error localizedDescription]];
+        }
+       
+    }
+    [backgroundConnectedStreams removeAllObjects];
+}
+
+- (void)session:(OTSession *)session
+archiveStartedWithId:(NSString *)archiveId
+           name:(NSString *)name
+{
+    NSLog(@"session archiving started");
+    [self startArchiveAnimation];
+}
+
+- (void)session:(OTSession*)session
+archiveStoppedWithId:(NSString *)archiveId
+{
+    NSLog(@"session archiving stopped");
+    [self stopArchiveAnimation];
 }
 
 @end
