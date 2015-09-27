@@ -201,7 +201,7 @@
                                                 </connections>
                                             </button>
                                         </subviews>
-                                        <color key="backgroundColor" red="0.03612294823" green="0.03612294823" blue="0.03612294823" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <color key="tintColor" red="0.2117647231" green="0.2117647231" blue="0.2117647231" alpha="1" colorSpace="deviceRGB"/>
                                         <variation key="widthClass=compact" fixedFrame="YES">
                                             <rect key="frame" x="0.0" y="40" width="400" height="50"/>
@@ -209,16 +209,11 @@
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
                                     <rect key="frame" x="0.0" y="483" width="400" height="85"/>
                                 </variation>
                             </view>
-                            <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon_arrowLeft_disabled-28.png" translatesAutoresizingMaskIntoConstraints="NO" id="Nqh-NW-qEU">
-                                <rect key="frame" x="20" y="270" width="40" height="40"/>
-                            </imageView>
-                            <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon_arrowRight_disabled-28.png" translatesAutoresizingMaskIntoConstraints="NO" id="yyQ-WV-6ip">
-                                <rect key="frame" x="272" y="270" width="40" height="40"/>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -233,8 +228,6 @@
                         <outlet property="bottomOverlayView" destination="Qcz-W5-u4P" id="b3l-bp-zBd"/>
                         <outlet property="cameraToggleButton" destination="yRr-7t-fuT" id="m7d-xQ-KQy"/>
                         <outlet property="endCallButton" destination="0Rd-WE-Qjd" id="ZQ0-ct-39w"/>
-                        <outlet property="leftArrowImgView" destination="Nqh-NW-qEU" id="mtV-2a-c5m"/>
-                        <outlet property="rightArrowImgView" destination="yyQ-WV-6ip" id="K0w-yu-06r"/>
                         <outlet property="topOverlayView" destination="cNe-S0-1gB" id="34w-wH-PBP"/>
                         <outlet property="userNameLabel" destination="7sJ-HB-c4V" id="CGN-Tc-OAi"/>
                         <outlet property="videoContainerView" destination="sJo-dC-pIF" id="TrK-Fh-GC6"/>
@@ -271,8 +264,6 @@
         <image name="archiving-off-15.png" width="15" height="15"/>
         <image name="camera-switch_black-33.png" width="33" height="33"/>
         <image name="camera_switch-33.png" width="33" height="33"/>
-        <image name="icon_arrowLeft_disabled-28.png" width="28" height="28"/>
-        <image name="icon_arrowRight_disabled-28.png" width="28" height="28"/>
         <image name="mic-24.png" width="24" height="24"/>
         <image name="mic_muted-24.png" width="24" height="24"/>
     </resources>

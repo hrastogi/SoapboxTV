@@ -29,8 +29,6 @@
 @property (retain, nonatomic) IBOutlet UIView *archiveOverlay;
 @property (retain, nonatomic) IBOutlet UILabel *archiveStatusLbl;
 @property (retain, nonatomic) IBOutlet UIImageView *archiveStatusImgView;
-@property (retain, nonatomic) IBOutlet UIImageView *rightArrowImgView;
-@property (retain, nonatomic) IBOutlet UIImageView *leftArrowImgView;
 @property (retain, nonatomic) IBOutlet UIImageView *archiveStatusImgView2;
 
 

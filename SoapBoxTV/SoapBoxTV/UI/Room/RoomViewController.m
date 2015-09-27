@@ -275,12 +275,6 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                                 PUBLISHER_PREVIEW_WIDTH,
                                 PUBLISHER_PREVIEW_HEIGHT)];
                     
-                    self.rightArrowImgView.frame =
-                    CGRectMake(videoContainerView.frame.size.width - 40 -
-                               10 - PUBLISHER_BAR_HEIGHT,
-                               videoContainerView.frame.size.height/2 - 20,
-                               40,
-                               40);
                     
                     
                 } else {
@@ -293,11 +287,6 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                                 PUBLISHER_PREVIEW_WIDTH,
                                 PUBLISHER_PREVIEW_HEIGHT)];
                     
-                    self.leftArrowImgView.frame =
-                    CGRectMake(10 + PUBLISHER_BAR_HEIGHT,
-                               videoContainerView.frame.size.height/2 - 20,
-                               40,
-                               40);
                     
                 }
             } completion:^(BOOL finished) {
@@ -377,20 +366,11 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                 if (orientation == UIInterfaceOrientationLandscapeRight) {
                     frame.origin.x += frame.size.width;
                     
-                    self.rightArrowImgView.frame =
-                    CGRectMake(videoContainerView.frame.size.width - 40 - 10,
-                               videoContainerView.frame.size.height/2 - 20,
-                               40,
-                               40);
+                   
                     
-                } else {
+                } else
+                {
                     frame.origin.x -= frame.size.width;
-                    
-                    self.leftArrowImgView.frame =
-                    CGRectMake(10 ,
-                               videoContainerView.frame.size.height/2 - 20,
-                               40,
-                               40);
                     
                 }
                 
@@ -577,17 +557,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                    CGRectGetWidth(self.audioPubUnpubButton.frame) + 5,
                    CGRectGetHeight(self.audioPubUnpubButton.frame) + 2);
         
-        self.leftArrowImgView.frame =
-        CGRectMake(10,
-                   videoContainerView.frame.size.height/2 - 20,
-                   40,
-                   40);
-        
-        self.rightArrowImgView.frame =
-        CGRectMake(videoContainerView.frame.size.width - 40 - 10,
-                   videoContainerView.frame.size.height/2 - 20,
-                   40,
-                   40);
+
         
         [videoContainerView setContentSize:
          CGSizeMake(videoContainerView.frame.size.width * (connectionsCount ),
@@ -643,18 +613,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                        self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
                        self.topOverlayView.frame.size.height);
             
-            self.leftArrowImgView.frame =
-            CGRectMake(10,
-                       videoContainerView.frame.size.height/2 - 20,
-                       40,
-                       40);
-            
-            self.rightArrowImgView.frame =
-            CGRectMake(self.view.frame.size.width - 40 - 10 -
-                       PUBLISHER_BAR_HEIGHT,
-                       videoContainerView.frame.size.height/2 - 20,
-                       40,
-                       40);
+           
             
             
             
@@ -705,17 +664,6 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                        self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
                        self.topOverlayView.frame.size.height);
             
-            self.leftArrowImgView.frame =
-            CGRectMake(10 + PUBLISHER_BAR_HEIGHT,
-                       videoContainerView.frame.size.height/2 - 20,
-                       40,
-                       40);
-            
-            self.rightArrowImgView.frame =
-            CGRectMake(self.view.frame.size.width - 40 - 10 ,
-                       videoContainerView.frame.size.height/2 - 20,
-                       40,
-                       40);
             
         }
         
