@@ -201,14 +201,14 @@
                                                 </connections>
                                             </button>
                                         </subviews>
-                                        <color key="backgroundColor" red="0.4549019608" green="0.43921568630000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="0.03612294823" green="0.03612294823" blue="0.03612294823" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="tintColor" red="0.2117647231" green="0.2117647231" blue="0.2117647231" alpha="1" colorSpace="deviceRGB"/>
                                         <variation key="widthClass=compact" fixedFrame="YES">
                                             <rect key="frame" x="0.0" y="40" width="400" height="50"/>
                                         </variation>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.20000000000000001" green="0.64705882349999999" blue="0.96470588239999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
                                     <rect key="frame" x="0.0" y="483" width="400" height="85"/>
                                 </variation>
@@ -230,6 +230,7 @@
                         <outlet property="archiveStatusLbl" destination="iUu-sx-B1Q" id="xL1-mN-wyD"/>
                         <outlet property="audioPubUnpubButton" destination="mnZ-xY-cVJ" id="IRz-D1-jUB"/>
                         <outlet property="audioSubUnsubButton" destination="1BG-H6-fjT" id="pbO-Lt-Mne"/>
+                        <outlet property="bottomOverlayView" destination="Qcz-W5-u4P" id="b3l-bp-zBd"/>
                         <outlet property="cameraToggleButton" destination="yRr-7t-fuT" id="m7d-xQ-KQy"/>
                         <outlet property="endCallButton" destination="0Rd-WE-Qjd" id="ZQ0-ct-39w"/>
                         <outlet property="leftArrowImgView" destination="Nqh-NW-qEU" id="mtV-2a-c5m"/>

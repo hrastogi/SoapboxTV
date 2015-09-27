@@ -145,21 +145,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     [self.view addGestureRecognizer:tgr];
 
     
-    UITapGestureRecognizer *leftArrowTapGesture = [[UITapGestureRecognizer alloc]
-                                                   initWithTarget:self
-                                                   action:@selector(handleArrowTap:)];
-    leftArrowTapGesture.delegate = self;
-    [self.leftArrowImgView addGestureRecognizer:leftArrowTapGesture];
-   
     
-    UITapGestureRecognizer *rightArrowTapGesture = [[UITapGestureRecognizer alloc]
-                                                    initWithTarget:self
-                                                    action:@selector(handleArrowTap:)];
-    rightArrowTapGesture.delegate = self;
-    [self.rightArrowImgView addGestureRecognizer:rightArrowTapGesture];
-  
-    
-    [self resetArrowsStates];
     
     self.archiveOverlay.hidden = YES;
     
@@ -826,7 +812,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
         [self showAsCurrentSubscriber:[allSubscribers
                                        objectForKey:connectionId]];
     }
-    [self resetArrowsStates];
+
 }
 
 - (void)showAsCurrentSubscriber:(OTSubscriber *)subscriber
@@ -870,8 +856,8 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                   initWithDelegate:self
                   name:[[UIDevice currentDevice] name]];
     
-    [self willAnimateRotationToInterfaceOrientation:
-     [[UIApplication sharedApplication] statusBarOrientation] duration:1.0];
+//    [self willAnimateRotationToInterfaceOrientation:
+//     [[UIApplication sharedApplication] statusBarOrientation] duration:1.0];
     
     [self.view addSubview:_publisher.view];
     
@@ -885,37 +871,11 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
 
 }
 
-- (IBAction)handlePan:(UIPanGestureRecognizer *)recognizer
-{
-    
-    CGPoint translation = [recognizer translationInView:_publisher.view];
-    CGRect recognizerFrame = recognizer.view.frame;
-    recognizerFrame.origin.x += translation.x;
-    recognizerFrame.origin.y += translation.y;
-    
-    
-    if (CGRectContainsRect(self.view.bounds, recognizerFrame)) {
-        recognizer.view.frame = recognizerFrame;
-    }
-    else {
-        if (recognizerFrame.origin.y < self.view.bounds.origin.y) {
-            recognizerFrame.origin.y = 0;
-        }
-        else if (recognizerFrame.origin.y + recognizerFrame.size.height > self.view.bounds.size.height) {
-            recognizerFrame.origin.y = self.view.bounds.size.height - recognizerFrame.size.height;
-        }
-        
-        if (recognizerFrame.origin.x < self.view.bounds.origin.x) {
-            recognizerFrame.origin.x = 0;
-        }
-        else if (recognizerFrame.origin.x + recognizerFrame.size.width > self.view.bounds.size.width) {
-            recognizerFrame.origin.x = self.view.bounds.size.width - recognizerFrame.size.width;
-        }
-    }
-    [recognizer setTranslation:CGPointMake(0, 0) inView:_publisher.view];
-}
+
 
 - (void)cycleSubscriberViewForward:(BOOL)forward {
+  
+    // Check this method for rotating subscriber views.
     int mod = 1;
     
     if (!forward) {
@@ -933,63 +893,13 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     
     [videoContainerView setContentOffset:
      CGPointMake(_currentSubscriber.view.frame.origin.x, 0) animated:YES];
-    
-    [self resetArrowsStates];
+
     
 }
 
-- (void)handleArrowTap:(UIPanGestureRecognizer *)recognizer
-{ // if there are no subscribers, simply return
-    if ([allSubscribers count] == 0)
-        return;
-    CGPoint touchPoint = [recognizer locationInView:self.leftArrowImgView];
-    if ([self.leftArrowImgView pointInside:touchPoint withEvent:nil])
-    {
-        [self cycleSubscriberViewForward:NO];
-    } else {
-        [self cycleSubscriberViewForward:YES];
-    }
-}
 
-- (void)resetArrowsStates
-{
-    
-    if (!_currentSubscriber)
-    {
-        self.leftArrowImgView.image =
-        [UIImage imageNamed:@"icon_arrowLeft_disabled-28.png"];
-        self.leftArrowImgView.userInteractionEnabled = NO;
-        
-        self.rightArrowImgView.image =
-        [UIImage imageNamed:@"icon_arrowRight_disabled-28.png"];
-        self.rightArrowImgView.userInteractionEnabled = NO;
-        return;
-    }
-    
-    if (_currentSubscriber.view.tag == 0)
-    {
-        self.leftArrowImgView.image =
-        [UIImage imageNamed:@"icon_arrowLeft_disabled-28.png"];
-        self.leftArrowImgView.userInteractionEnabled = NO;
-    } else
-    {
-        self.leftArrowImgView.image =
-        [UIImage imageNamed:@"icon_arrowLeft_enabled-28.png"];
-        self.leftArrowImgView.userInteractionEnabled = YES;
-    }
-    
-    if (_currentSubscriber.view.tag == [allConnectionsIds count] - 1)
-    {
-        self.rightArrowImgView.image =
-        [UIImage imageNamed:@"icon_arrowRight_disabled-28.png"];
-        self.rightArrowImgView.userInteractionEnabled = NO;
-    } else
-    {
-        self.rightArrowImgView.image =
-        [UIImage imageNamed:@"icon_arrowRight_enabled-28.png"];
-        self.rightArrowImgView.userInteractionEnabled = YES;
-    }
-}
+
+
 #pragma mark - OpenTok Session
 - (void)session:(OTSession *)session
 connectionDestroyed:(OTConnection *)connection
@@ -1067,7 +977,7 @@ connectionCreated:(OTConnection *)connection
     {
         [self stopArchiveAnimation];
     }
-    [self resetArrowsStates];
+    
 }
 
 - (void)    session:(OTSession *)session
@@ -1095,7 +1005,7 @@ connectionCreated:(OTConnection *)connection
                                        objectForKey:firstConnection]];
     }
     
-    [self resetArrowsStates];
+  
 }
 
 - (void)createSubscriber:(OTStream *)stream
@@ -1165,7 +1075,7 @@ connectionCreated:(OTConnection *)connection
     
     [allStreams setObject:sub.stream forKey:sub.stream.connection.connectionId];
     
-    [self resetArrowsStates];
+   
   
 }
 
