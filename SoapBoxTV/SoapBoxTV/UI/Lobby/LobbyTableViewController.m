@@ -14,6 +14,7 @@ static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 
 @interface LobbyTableViewController ()
 @property (nonatomic) NSArray *rooms;
+
 @end
 
 @implementation LobbyTableViewController
@@ -63,9 +64,10 @@ static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     
-    RoomViewController *lobbyVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"RoomViewController"];
+    RoomViewController *roomVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"RoomViewController"];
     self.navigationItem.title = @"";
-    [self.navigationController pushViewController:lobbyVC animated:YES];
+    roomVC.userInfoDto = self.userCredentialsDictionary;
+    [self.navigationController pushViewController:roomVC animated:YES];
 
     
 }

@@ -31,6 +31,8 @@
 @property (retain, nonatomic) IBOutlet UIImageView *archiveStatusImgView;
 @property (retain, nonatomic) IBOutlet UIImageView *archiveStatusImgView2;
 
+@property (nonatomic) IBOutlet NSDictionary *userInfoDto;
+
 
 - (IBAction)toggleAudioSubscribe:(id)sender;
 - (IBAction)toggleCameraPosition:(id)sender;

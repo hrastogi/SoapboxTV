@@ -6,6 +6,7 @@
 //
 
 #import "RoomViewController.h"
+#import <SIOSocket/SIOSocket.h>
 #import <OpenTok/OpenTok.h>
 
 
@@ -50,7 +51,9 @@
     int _currentSubscriberIndex;
 }
 
-
+@property (nonatomic) SIOSocket *socket;
+@property (nonatomic,assign)BOOL socketIsConnected;
+@property (nonatomic) NSString *openTokToken;
 @end
 
 @implementation RoomViewController
@@ -58,9 +61,9 @@
 // *** Fill the following variables using your own Project info  ***
 // ***          https://dashboard.tokbox.com/projects            ***
 // Replace with your OpenTok API key
-static NSString* const kApiKey = @"45304762";
+static NSString* const kApiKey = @"45194852";
 // Replace with your generated session ID
-static NSString* const kSessionId = @"2_MX40NTMwNDc2Mn5-MTQ0MjAxMTM5MTU2N35uUTdkMzYyWDluZDN3NE9kWVVNMk1GdGJ-UH4";
+static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVLbVNKTnFPbVp5UVdUK3lqNXlHSW5-fg";
 // Replace with your generated token
 static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYzQ5MWY3MzFiZWRiNDkyZTk3OWFhNWU3ZjQ3ZjI4YjhkMjpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5UTXdORGMyTW41LU1UUTBNakF4TVRNNU1UVTJOMzV1VVRka016WXlXRGx1WkROM05FOWtXVlZOTWsxR2RHSi1VSDQmY3JlYXRlX3RpbWU9MTQ0MjAxMTM5NSZub25jZT0wLjI2MDYyNTY5MzIwOTQzNTImZXhwaXJlX3RpbWU9MTQ0NDYwMzIyNCZjb25uZWN0aW9uX2RhdGE9";
 
@@ -74,6 +77,45 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+
+    self.openTokToken = kToken;
+    
+    [SIOSocket socketWithHost: @"http://52.27.116.102:7273" response: ^(SIOSocket *socket) {
+        NSLog(@"connected");
+        self.socket = socket;
+        
+        __weak typeof(self) weakSelf = self;
+        
+        
+        
+        self.socket.onConnect = ^()
+        {
+            weakSelf.socketIsConnected = YES;
+            // Broadcast new location
+            if (self.socketIsConnected)
+            {
+                [self.socket emit: @"register" args: @[self.userInfoDto]];
+            }
+            
+        };
+        
+        [self.socket on: @"initiOSUserEmit" callback: ^(SIOParameterArray *args)
+         {
+             NSLog(@"%@ ARGS",args);
+             NSDictionary *dto = [args objectAtIndex:0];
+            
+             
+             //self.openTokToken = [dto valueForKey:@"opentok_user_token"];
+             //[self setupSession];
+             
+         }];
+        
+        
+        
+    }];
+
+    
     
     self.videoContainerView.bounces = NO;
     
@@ -145,12 +187,11 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     [self.view addGestureRecognizer:tgr];
 
     
-    
+    [self setupSession];
     
     self.archiveOverlay.hidden = YES;
     
-    [self setupSession];
-    
+
     [self.endCallButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     
     self.archiveStatusImgView2.hidden = YES;
@@ -792,7 +833,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     _session = [[OTSession alloc] initWithApiKey:kApiKey
                                        sessionId:kSessionId
                                         delegate:self];
-    [_session connectWithToken:kToken error:nil];
+    [_session connectWithToken:self.openTokToken error:nil];
     [self setupPublisher];
     
 }
@@ -874,6 +915,7 @@ connectionCreated:(OTConnection *)connection
 
 - (void)reArrangeSubscribers
 {
+    return;
     
     CGFloat containerWidth = CGRectGetWidth(videoContainerView.bounds);
     CGFloat containerHeight = CGRectGetHeight(videoContainerView.bounds);

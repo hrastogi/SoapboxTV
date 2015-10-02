@@ -42,6 +42,7 @@
 		6D4EB7361BAFD74300E3B2B5 /* TB Bug-30@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D4EB7161BAFD74300E3B2B5 /* TB Bug-30@2x.png */; };
 		6D82EA771B8A8F58007EE2D6 /* LobbyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D82EA701B8A8F58007EE2D6 /* LobbyTableViewController.m */; };
 		6D82EA781B8A8F58007EE2D6 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D82EA731B8A8F58007EE2D6 /* LoginViewController.m */; };
+		6D8631831BBE41A9002234D8 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8631821BBE41A9002234D8 /* UserModel.m */; };
 		6DA859041B6E69C60047D2A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859031B6E69C60047D2A3 /* main.m */; };
 		6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6DA859061B6E69C60047D2A3 /* AppDelegate.m */; };
 		6DA8590D1B6E69C60047D2A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DA8590B1B6E69C60047D2A3 /* Main.storyboard */; };
@@ -123,6 +124,8 @@
 		6D82EA701B8A8F58007EE2D6 /* LobbyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LobbyTableViewController.m; sourceTree = "<group>"; };
 		6D82EA721B8A8F58007EE2D6 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		6D82EA731B8A8F58007EE2D6 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		6D8631811BBE41A9002234D8 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
+		6D8631821BBE41A9002234D8 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		6DA858FE1B6E69C50047D2A3 /* SoapBoxTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoapBoxTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA859021B6E69C60047D2A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA859031B6E69C60047D2A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -356,6 +359,8 @@
 			children = (
 				6DDAA9331B893CB3003DFD22 /* Room.h */,
 				6DDAA9341B893CB3003DFD22 /* Room.m */,
+				6D8631811BBE41A9002234D8 /* UserModel.h */,
+				6D8631821BBE41A9002234D8 /* UserModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -601,6 +606,7 @@
 				6DDAA9351B893CB3003DFD22 /* Room.m in Sources */,
 				6DD7498E1BA4AC84003681E3 /* LobbyTableViewCell.m in Sources */,
 				6DDAA93F1B8A6D15003DFD22 /* RoomAssembler.m in Sources */,
+				6D8631831BBE41A9002234D8 /* UserModel.m in Sources */,
 				6D82EA781B8A8F58007EE2D6 /* LoginViewController.m in Sources */,
 				6DA859071B6E69C60047D2A3 /* AppDelegate.m in Sources */,
 				6DA859041B6E69C60047D2A3 /* main.m in Sources */,

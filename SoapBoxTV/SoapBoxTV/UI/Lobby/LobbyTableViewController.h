@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface LobbyTableViewController : UITableViewController
-
+@property (nonatomic) NSDictionary *userCredentialsDictionary;
 @end
