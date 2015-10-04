@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+@class UserModel;
 @interface LobbyTableViewController : UITableViewController
-@property (nonatomic) NSDictionary *userCredentialsDictionary;
+@property (nonatomic) UserModel *userInfo;
 @end

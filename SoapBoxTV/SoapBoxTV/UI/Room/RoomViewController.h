@@ -10,10 +10,8 @@
 #import <Opentok/Opentok.h>
 #import <QuartzCore/QuartzCore.h>
 
-@interface RoomViewController : UIViewController <OTSessionDelegate, OTPublisherDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate> {
-    
-}
-
+@class UserModel,Room;
+@interface RoomViewController : UIViewController <OTSessionDelegate, OTPublisherDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIScrollView *videoContainerView;
 @property (strong, nonatomic) IBOutlet UIView *bottomOverlayView;
@@ -31,7 +29,8 @@
 @property (retain, nonatomic) IBOutlet UIImageView *archiveStatusImgView;
 @property (retain, nonatomic) IBOutlet UIImageView *archiveStatusImgView2;
 
-@property (nonatomic) IBOutlet NSDictionary *userInfoDto;
+@property (nonatomic) UserModel *userInfo;
+@property (nonatomic) Room *roomInfo;
 
 
 - (IBAction)toggleAudioSubscribe:(id)sender;

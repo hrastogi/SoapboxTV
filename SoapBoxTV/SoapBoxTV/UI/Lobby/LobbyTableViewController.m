@@ -9,6 +9,7 @@
 #import "LobbyTableViewController.h"
 #import "LobbyTableViewCell.h"
 #import "RoomViewController.h"
+#import "UserModel.h"
 
 static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 
@@ -18,11 +19,16 @@ static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 @end
 
 @implementation LobbyTableViewController
-- (void)viewDidLoad {
+
+#pragma mark - View Hierarchy
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
+    // Set up UI
     self.navigationItem.hidesBackButton = YES;
     
+    // Register nib name for table vie wcell
     [self.tableView registerNib:[UINib nibWithNibName:lobbyCellNibName bundle:nil] forCellReuseIdentifier:lobbyCellNibName];
     RoomStore *roomStore = [RoomStore sharedInstance];
     [roomStore fetchLobbyDataWithCallback:^(NSError* error){
@@ -39,7 +45,7 @@ static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-
+    
     // Return the number of sections.
     return 1;
 }
@@ -61,14 +67,15 @@ static NSString *lobbyCellNibName = @"LobbyTableViewCell";
 }
 
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     
     RoomViewController *roomVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"RoomViewController"];
+    roomVC.userInfo = self.userInfo;
+    roomVC.roomInfo = [self.rooms objectAtIndex:indexPath.row];
     self.navigationItem.title = @"";
-    roomVC.userInfoDto = self.userCredentialsDictionary;
     [self.navigationController pushViewController:roomVC animated:YES];
-
+    
     
 }
 

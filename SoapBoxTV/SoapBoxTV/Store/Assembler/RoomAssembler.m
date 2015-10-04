@@ -13,7 +13,7 @@
 +(RoomAssembler*)sharedInstance
 {
     static dispatch_once_t token;
-    static  RoomAssembler *sharedInstance = nil;
+    static RoomAssembler *sharedInstance = nil;
     dispatch_once(&token, ^{
         sharedInstance = [[RoomAssembler alloc] init];
     });
@@ -21,10 +21,10 @@
 }
 
 #pragma mark - Assembler
--(NSArray*)createRoomsFromJsonResponse:(NSDictionary*)results{
+-(NSArray*)createRoomsFromJsonResponse:(NSDictionary*)results {
     NSArray *roomsArray = [results objectForKey:@"soapbox_rooms"];
     NSMutableArray *tempArray =[NSMutableArray array];
-    for(NSDictionary *dto in roomsArray){
+    for(NSDictionary *dto in roomsArray) {
         [tempArray addObject:[self createRoomFromDictionary:dto]];
     }
     
@@ -32,13 +32,13 @@
     return [NSArray arrayWithArray:tempArray];
 }
 
--(Room*)createRoomFromDictionary:(NSDictionary*)dto{
+-(Room*)createRoomFromDictionary:(NSDictionary*)dto {
     Room *room = [[Room alloc] init];
     room.roomId = [(NSString*)[dto valueForKey:@"room_id"] integerValue];
     room.title = [dto valueForKey:@"room_title"];
     room.subTitle = [dto valueForKey:@"room_sub_title"];
     room.startTime = [dto valueForKey:@"room_start_time"];
-    
+    room.openTokSessionId = [dto valueForKey:@"room_opentok_session"];
     
     return room;
 }

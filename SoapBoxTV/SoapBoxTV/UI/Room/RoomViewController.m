@@ -6,8 +6,10 @@
 //
 
 #import "RoomViewController.h"
+#import "UserModel.h"
 #import <SIOSocket/SIOSocket.h>
 #import <OpenTok/OpenTok.h>
+#import "Room.h"
 
 
 #define APP_IN_FULL_SCREEN @"appInFullScreenMode"
@@ -52,7 +54,7 @@
 }
 
 @property (nonatomic) SIOSocket *socket;
-@property (nonatomic,assign)BOOL socketIsConnected;
+@property (nonatomic,assign) BOOL socketIsConnected;
 @property (nonatomic) NSString *openTokToken;
 @end
 
@@ -78,43 +80,10 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
 {
     [super viewDidLoad];
     
-
+    
     self.openTokToken = kToken;
     
-    [SIOSocket socketWithHost: @"http://52.27.116.102:7273" response: ^(SIOSocket *socket) {
-        NSLog(@"connected");
-        self.socket = socket;
-        
-        __weak typeof(self) weakSelf = self;
-        
-        
-        
-        self.socket.onConnect = ^()
-        {
-            weakSelf.socketIsConnected = YES;
-            // Broadcast new location
-            if (self.socketIsConnected)
-            {
-                [self.socket emit: @"register" args: @[self.userInfoDto]];
-            }
-            
-        };
-        
-        [self.socket on: @"initiOSUserEmit" callback: ^(SIOParameterArray *args)
-         {
-             NSLog(@"%@ ARGS",args);
-             NSDictionary *dto = [args objectAtIndex:0];
-            
-             
-             //self.openTokToken = [dto valueForKey:@"opentok_user_token"];
-             //[self setupSession];
-             
-         }];
-        
-        
-        
-    }];
-
+    
     
     
     self.videoContainerView.bounces = NO;
@@ -185,13 +154,13 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                                    action:@selector(viewTapped:)];
     tgr.delegate = self;
     [self.view addGestureRecognizer:tgr];
-
+    
     
     [self setupSession];
     
     self.archiveOverlay.hidden = YES;
     
-
+    
     [self.endCallButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     
     self.archiveStatusImgView2.hidden = YES;
@@ -295,9 +264,9 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                 
                 frame = self.bottomOverlayView.frame;
                 if (orientation == UIInterfaceOrientationLandscapeRight) {
-                    frame.origin.x -= frame.size.width;
+			                 frame.origin.x -= frame.size.width;
                 } else {
-                    frame.origin.x += frame.size.width;
+			                 frame.origin.x += frame.size.width;
                 }
                 
                 self.bottomOverlayView.frame = frame;
@@ -307,26 +276,26 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                 self.archiveOverlay.frame = frame;
                 
                 if (orientation == UIInterfaceOrientationLandscapeRight) {
-                    [_publisher.view setFrame:
-                     CGRectMake(8,
-                                self.view.frame.size.height -
-                                ((self.archiveOverlay.hidden ? 0 :
-                                  ARCHIVE_BAR_HEIGHT) + 8 +
-                                 PUBLISHER_PREVIEW_HEIGHT),
-                                PUBLISHER_PREVIEW_WIDTH,
-                                PUBLISHER_PREVIEW_HEIGHT)];
+			                 [_publisher.view setFrame:
+                              CGRectMake(8,
+                                         self.view.frame.size.height -
+                                         ((self.archiveOverlay.hidden ? 0 :
+                                           ARCHIVE_BAR_HEIGHT) + 8 +
+                                          PUBLISHER_PREVIEW_HEIGHT),
+                                         PUBLISHER_PREVIEW_WIDTH,
+                                         PUBLISHER_PREVIEW_HEIGHT)];
                     
                     
                     
                 } else {
-                    [_publisher.view setFrame:
-                     CGRectMake(PUBLISHER_BAR_HEIGHT + 8,
-                                self.view.frame.size.height -
-                                ((self.archiveOverlay.hidden ? 0 :
-                                  ARCHIVE_BAR_HEIGHT) + 8 +
-                                 PUBLISHER_PREVIEW_HEIGHT),
-                                PUBLISHER_PREVIEW_WIDTH,
-                                PUBLISHER_PREVIEW_HEIGHT)];
+			                 [_publisher.view setFrame:
+                              CGRectMake(PUBLISHER_BAR_HEIGHT + 8,
+                                         self.view.frame.size.height -
+                                         ((self.archiveOverlay.hidden ? 0 :
+                                           ARCHIVE_BAR_HEIGHT) + 8 +
+                                          PUBLISHER_PREVIEW_HEIGHT),
+                                         PUBLISHER_PREVIEW_WIDTH,
+                                         PUBLISHER_PREVIEW_HEIGHT)];
                     
                     
                 }
@@ -365,9 +334,9 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                 // User really tapped (not from willAnimateToration...)
                 if (tgr)
                 {
-                    frame.size.height =
+			                 frame.size.height =
                     self.videoContainerView.frame.size.height;
-                    _currentSubscriber.view.frame = frame;
+			                 _currentSubscriber.view.frame = frame;
                 }
                 
                 frame = self.topOverlayView.frame;
@@ -405,14 +374,14 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                 
                 frame = self.bottomOverlayView.frame;
                 if (orientation == UIInterfaceOrientationLandscapeRight) {
-                    frame.origin.x += frame.size.width;
-                    
-                   
-                    
+			                 frame.origin.x += frame.size.width;
+			                 
+			                 
+			                 
                 } else
                 {
-                    frame.origin.x -= frame.size.width;
-                    
+			                 frame.origin.x -= frame.size.width;
+			                 
                 }
                 
                 self.bottomOverlayView.frame = frame;
@@ -598,7 +567,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                    CGRectGetWidth(self.audioPubUnpubButton.frame) + 5,
                    CGRectGetHeight(self.audioPubUnpubButton.frame) + 2);
         
-
+        
         
         [videoContainerView setContentSize:
          CGSizeMake(videoContainerView.frame.size.width * (connectionsCount ),
@@ -635,7 +604,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
             self.archiveOverlay.frame =
             CGRectMake(0,
                        containerView.frame.size.height - ARCHIVE_BAR_HEIGHT,
-                       containerView.frame.size.width ,
+                       containerView.frame.size.width,
                        ARCHIVE_BAR_HEIGHT);
             
             [self.bottomOverlayView removeFromSuperview];
@@ -654,7 +623,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                        self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
                        self.topOverlayView.frame.size.height);
             
-           
+            
             
             
             
@@ -664,7 +633,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
             [videoContainerView setFrame:
              CGRectMake(0,
                         0,
-                        self.view.frame.size.width ,
+                        self.view.frame.size.width,
                         self.view.frame.size.height)];
             
             [_publisher.view setFrame:
@@ -696,7 +665,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
             self.archiveOverlay.frame =
             CGRectMake(0,
                        containerView.frame.size.height - ARCHIVE_BAR_HEIGHT,
-                       containerView.frame.size.width ,
+                       containerView.frame.size.width,
                        ARCHIVE_BAR_HEIGHT);
             
             self.topOverlayView.frame =
@@ -744,7 +713,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
         borderLayer.frame =
         CGRectMake(0,
                    1,
-                   CGRectGetWidth(self.cameraToggleButton.frame) ,
+                   CGRectGetWidth(self.cameraToggleButton.frame),
                    1
                    );
         
@@ -801,7 +770,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
         [self showAsCurrentSubscriber:[allSubscribers
                                        objectForKey:connectionId]];
     }
-
+    
 }
 
 - (void)showAsCurrentSubscriber:(OTSubscriber *)subscriber
@@ -845,25 +814,18 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
                   initWithDelegate:self
                   name:[[UIDevice currentDevice] name]];
     
-//    [self willAnimateRotationToInterfaceOrientation:
-//     [[UIApplication sharedApplication] statusBarOrientation] duration:1.0];
+    //    [self willAnimateRotationToInterfaceOrientation:
+    //     [[UIApplication sharedApplication] statusBarOrientation] duration:1.0];
     
     [self.view addSubview:_publisher.view];
-    
-    // add pan gesture to publisher
-    UIPanGestureRecognizer *pgr = [[UIPanGestureRecognizer alloc]
-                                   initWithTarget:self
-                                   action:@selector(handlePan:)];
-    [_publisher.view addGestureRecognizer:pgr];
-    pgr.delegate = self;
     _publisher.view.userInteractionEnabled = YES;
-
+    
 }
 
 
 
 - (void)cycleSubscriberViewForward:(BOOL)forward {
-  
+    
     // Check this method for rotating subscriber views.
     int mod = 1;
     
@@ -882,7 +844,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     
     [videoContainerView setContentOffset:
      CGPointMake(_currentSubscriber.view.frame.origin.x, 0) animated:YES];
-
+    
     
 }
 
@@ -995,7 +957,7 @@ connectionCreated:(OTConnection *)connection
                                        objectForKey:firstConnection]];
     }
     
-  
+    
 }
 
 - (void)createSubscriber:(OTStream *)stream
@@ -1065,8 +1027,8 @@ connectionCreated:(OTConnection *)connection
     
     [allStreams setObject:sub.stream forKey:sub.stream.connection.connectionId];
     
-   
-  
+    
+    
 }
 
 - (void)publisher:(OTPublisherKit *)publisher
@@ -1120,7 +1082,7 @@ connectionCreated:(OTConnection *)connection
 - (void)showAlert:(NSString *)string
 {
     // show alertview on main UI
-  
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -1152,7 +1114,7 @@ connectionCreated:(OTConnection *)connection
      removeObserver:self
      name:UIApplicationDidBecomeActiveNotification
      object:nil];
-
+    
 }
 
 - (IBAction)toggleCameraPosition:(id)sender
@@ -1264,7 +1226,7 @@ connectionCreated:(OTConnection *)connection
         {
             [self showAlert:[error localizedDescription]];
         }
-       
+        
     }
     [backgroundConnectedStreams removeAllObjects];
 }
@@ -1282,6 +1244,54 @@ archiveStoppedWithId:(NSString *)archiveId
 {
     NSLog(@"session archiving stopped");
     [self stopArchiveAnimation];
+}
+
+
+#pragma mark - Connect to soapbox server
+-(void)connectToSoapBoxServer {
+    NSDictionary *userInfoDto = @{@"room":@1,@"roomName":@"slug1",@"username": self.userInfo.twitterUserName, @"userID": self.userInfo.twitterUserID,@"authToken":self.userInfo.twitterAuthToken,@"authTokenSecret":self.userInfo.twitterAuthTokenSecret, @"platform":@"iOS"};
+    
+    [SIOSocket socketWithHost: @"http://52.27.116.102:7273" response: ^(SIOSocket *socket) {
+        NSLog(@"connected");
+        self.socket = socket;
+        
+        __weak typeof(self) weakSelf = self;
+        
+        
+        
+        self.socket.onConnect = ^()
+        {
+            weakSelf.socketIsConnected = YES;
+            // Broadcast new location
+            [weakSelf.socket emit: @"register" args: @[userInfoDto]];
+            
+        };
+        
+        [self.socket on: @"initiOSUserEmit" callback: ^(SIOParameterArray *args)
+         {
+             NSLog(@"%@ ARGS",args);
+             //self.openTokToken = [dto valueForKey:@"opentok_user_token"];
+             //[self setupSession];
+             
+         }];
+        
+        
+        //        [self.socket on: @"initSBRoomClientEmit" callback: ^(SIOParameterArray *args)
+        //         {
+        //             NSLog(@"%@ ARGS",args);
+        //             NSDictionary *dto = [args objectAtIndex:0];
+        //
+        //
+        //             //self.openTokToken = [dto valueForKey:@"opentok_user_token"];
+        //             //[self setupSession];
+        //
+        //         }];
+        
+        
+        
+        
+    }];
+    
 }
 
 @end

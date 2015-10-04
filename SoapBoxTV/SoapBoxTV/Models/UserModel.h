@@ -12,5 +12,5 @@
 @property (nonatomic) NSString *twitterUserID;
 @property (nonatomic) NSString *twitterUserName;
 @property (nonatomic) NSString *twitterAuthToken;
-@property (nonatomic) NSString *twitterAuthTokeenSecret;
+@property (nonatomic) NSString *twitterAuthTokenSecret;
 @end

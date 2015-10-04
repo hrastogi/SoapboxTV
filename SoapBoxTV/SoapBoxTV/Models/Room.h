@@ -16,5 +16,6 @@
 @property (nonatomic) NSString *slug;
 @property (nonatomic) NSString *presenter;
 @property (nonatomic) NSString *startTime;
+@property (nonatomic) NSString *openTokSessionId;
 
 @end
