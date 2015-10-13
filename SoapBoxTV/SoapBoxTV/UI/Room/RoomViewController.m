@@ -22,7 +22,7 @@
 #define PUBLISHER_PREVIEW_WIDTH 113.0f
 
 #define OVERLAY_HIDE_TIME 7.0f
-
+static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 
 // otherwise no upside down rotation
 @interface UINavigationController (RotationAll)
@@ -56,6 +56,8 @@
 @property (nonatomic) SIOSocket *socket;
 @property (nonatomic,assign) BOOL socketIsConnected;
 @property (nonatomic) NSString *openTokToken;
+@property (nonatomic) NSArray *roomStreamsArray;
+
 @end
 
 @implementation RoomViewController
@@ -83,9 +85,37 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     
     self.openTokToken = kToken;
     
+    [self setupSession];
+    
+    self.archiveOverlay.hidden = YES;
     
     
+    [self.endCallButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     
+    self.archiveStatusImgView2.hidden = YES;
+    [self adjustArchiveStatusImgView];
+    
+    // application background/foreground monitoring for publish/subscribe video
+    // toggling
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(enteringBackgroundMode:)
+     name:UIApplicationWillResignActiveNotification
+     object:nil];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(leavingBackgroundMode:)
+     name:UIApplicationDidBecomeActiveNotification
+     object:nil];
+    
+    [self setUpUIForOpenTok];
+    
+}
+
+
+-(void)setUpUIForOpenTok
+{
     self.videoContainerView.bounces = NO;
     
     [self.view sendSubviewToBack:self.videoContainerView];
@@ -156,31 +186,8 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     [self.view addGestureRecognizer:tgr];
     
     
-    [self setupSession];
-    
-    self.archiveOverlay.hidden = YES;
-    
-    
-    [self.endCallButton sendActionsForControlEvents:UIControlEventTouchUpInside];
-    
-    self.archiveStatusImgView2.hidden = YES;
-    [self adjustArchiveStatusImgView];
-    
-    // application background/foreground monitoring for publish/subscribe video
-    // toggling
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(enteringBackgroundMode:)
-     name:UIApplicationWillResignActiveNotification
-     object:nil];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(leavingBackgroundMode:)
-     name:UIApplicationDidBecomeActiveNotification
-     object:nil];
-    
 }
+
 
 -(void)adjustArchiveStatusImgView
 {
@@ -1251,7 +1258,7 @@ archiveStoppedWithId:(NSString *)archiveId
 -(void)connectToSoapBoxServer {
     NSDictionary *userInfoDto = @{@"room":@1,@"roomName":@"slug1",@"username": self.userInfo.twitterUserName, @"userID": self.userInfo.twitterUserID,@"authToken":self.userInfo.twitterAuthToken,@"authTokenSecret":self.userInfo.twitterAuthTokenSecret, @"platform":@"iOS"};
     
-    [SIOSocket socketWithHost: @"http://52.27.116.102:7273" response: ^(SIOSocket *socket) {
+    [SIOSocket socketWithHost: soapBoxServerUrl response: ^(SIOSocket *socket) {
         NSLog(@"connected");
         self.socket = socket;
         
@@ -1270,28 +1277,26 @@ archiveStoppedWithId:(NSString *)archiveId
         [self.socket on: @"initiOSUserEmit" callback: ^(SIOParameterArray *args)
          {
              NSLog(@"%@ ARGS",args);
-             //self.openTokToken = [dto valueForKey:@"opentok_user_token"];
+             self.openTokToken = [args valueForKey:@"opentok_user_token"];
              //[self setupSession];
+             
+             // Get all the stream ids array
+             self.roomStreamsArray = [args valueForKey:@"roomStreams"];
              
          }];
         
-        
-        //        [self.socket on: @"initSBRoomClientEmit" callback: ^(SIOParameterArray *args)
-        //         {
-        //             NSLog(@"%@ ARGS",args);
-        //             NSDictionary *dto = [args objectAtIndex:0];
-        //
-        //
-        //             //self.openTokToken = [dto valueForKey:@"opentok_user_token"];
-        //             //[self setupSession];
-        //
-        //         }];
         
         
         
         
     }];
     
+}
+
+-(void)requestToHopOnStage:(NSString*)streamId {
+    if(self.socketIsConnected) {
+        [self.socket emit: @"requestToHopStageEmit" args: @[streamId]];
+    }
 }
 
 @end
