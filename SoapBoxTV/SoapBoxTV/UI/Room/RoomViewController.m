@@ -57,6 +57,7 @@ static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 @property (nonatomic,assign) BOOL socketIsConnected;
 @property (nonatomic) NSString *openTokToken;
 @property (nonatomic) NSArray *roomStreamsArray;
+@property (nonatomic) NSString *streamId;
 
 @end
 
@@ -68,10 +69,6 @@ static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 static NSString* const kApiKey = @"45194852";
 // Replace with your generated session ID
 static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVLbVNKTnFPbVp5UVdUK3lqNXlHSW5-fg";
-// Replace with your generated token
-static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYzQ5MWY3MzFiZWRiNDkyZTk3OWFhNWU3ZjQ3ZjI4YjhkMjpyb2xlPXB1Ymxpc2hlciZzZXNzaW9uX2lkPTJfTVg0ME5UTXdORGMyTW41LU1UUTBNakF4TVRNNU1UVTJOMzV1VVRka016WXlXRGx1WkROM05FOWtXVlZOTWsxR2RHSi1VSDQmY3JlYXRlX3RpbWU9MTQ0MjAxMTM5NSZub25jZT0wLjI2MDYyNTY5MzIwOTQzNTImZXhwaXJlX3RpbWU9MTQ0NDYwMzIyNCZjb25uZWN0aW9uX2RhdGE9";
-
-
 
 #pragma mark - View lifecycle
 
@@ -81,11 +78,6 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
-    self.openTokToken = kToken;
-    
-    [self setupSession];
     
     self.archiveOverlay.hidden = YES;
     
@@ -110,7 +102,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
      object:nil];
     
     [self setUpUIForOpenTok];
-    
+    [self connectToSoapBoxServer];
 }
 
 
@@ -313,106 +305,11 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
         }
         
         // start overlay hide timer
-        self.overlayTimer =
-        [NSTimer scheduledTimerWithTimeInterval:OVERLAY_HIDE_TIME
-                                         target:self
-                                       selector:@selector(overlayTimerAction)
-                                       userInfo:nil
-                                        repeats:NO];
-    }
-    else
-    {
-        [self.topOverlayView.layer setValue:[NSNumber numberWithBool:YES]
-                                     forKey:APP_IN_FULL_SCREEN];
-        
-        // invalidate timer so that it wont hide again
-        [self.overlayTimer invalidate];
-        
-        
-        // Hide/Adjust top, bottom, archive, publisher and video container
-        // views according to the orientation
-        if (orientation == UIInterfaceOrientationPortrait ||
-            orientation == UIInterfaceOrientationPortraitUpsideDown)
-        {
-            
-            [UIView animateWithDuration:0.5 animations:^{
-                
-                CGRect frame = _currentSubscriber.view.frame;
-                // User really tapped (not from willAnimateToration...)
-                if (tgr)
-                {
-			                 frame.size.height =
-                    self.videoContainerView.frame.size.height;
-			                 _currentSubscriber.view.frame = frame;
-                }
-                
-                frame = self.topOverlayView.frame;
-                frame.origin.y -= frame.size.height;
-                self.topOverlayView.frame = frame;
-                
-                frame = self.archiveOverlay.superview.frame;
-                frame.origin.y += frame.size.height;
-                self.archiveOverlay.superview.frame = frame;
-                
-                
-                [_publisher.view setFrame:
-                 CGRectMake(8,
-                            self.view.frame.size.height -
-                            (8 + PUBLISHER_PREVIEW_HEIGHT),
-                            PUBLISHER_PREVIEW_WIDTH,
-                            PUBLISHER_PREVIEW_HEIGHT)];
-            } completion:^(BOOL finished) {
-            }];
-            
-        }
-        else
-        {
-            
-            [UIView animateWithDuration:0.5 animations:^{
-                
-                CGRect frame = _currentSubscriber.view.frame;
-                frame.size.width =
-                self.videoContainerView.frame.size.width;
-                _currentSubscriber.view.frame = frame;
-                
-                frame = self.topOverlayView.frame;
-                frame.origin.y -= frame.size.height;
-                self.topOverlayView.frame = frame;
-                
-                frame = self.bottomOverlayView.frame;
-                if (orientation == UIInterfaceOrientationLandscapeRight) {
-			                 frame.origin.x += frame.size.width;
-			                 
-			                 
-			                 
-                } else
-                {
-			                 frame.origin.x -= frame.size.width;
-			                 
-                }
-                
-                self.bottomOverlayView.frame = frame;
-                
-                frame = self.archiveOverlay.frame;
-                frame.origin.y += frame.size.height;
-                self.archiveOverlay.frame = frame;
-                
-                
-                [_publisher.view setFrame:
-                 CGRectMake(8,
-                            self.view.frame.size.height -
-                            (8 + PUBLISHER_PREVIEW_HEIGHT),
-                            PUBLISHER_PREVIEW_WIDTH,
-                            PUBLISHER_PREVIEW_HEIGHT)];
-            } completion:^(BOOL finished) {
-            }];
-        }
-    }
-    
-    // no need to arrange subscribers when it comes from willRotate
-    if (tgr)
-    {
-        [self reArrangeSubscribers];
+        self.overlayTimer = [NSTimer scheduledTimerWithTimeInterval:OVERLAY_HIDE_TIME
+                                                             target:self
+                                                           selector:@selector(overlayTimerAction)
+                                                           userInfo:nil
+                                                            repeats:NO];
     }
     
 }
@@ -447,321 +344,6 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     }
 }
 
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskAll;
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
-{
-    BOOL isInFullScreen =   [[[self topOverlayView].layer
-                              valueForKey:APP_IN_FULL_SCREEN] boolValue];
-    // we already adjusted in willrotate for full screen
-    if (isInFullScreen)
-        return;
-    [self adjustArchiveStatusImgView];
-}
-- (void)willAnimateRotationToInterfaceOrientation:
-(UIInterfaceOrientation)toInterfaceOrientation
-                                         duration:(NSTimeInterval)duration
-{
-    [super willRotateToInterfaceOrientation:
-     toInterfaceOrientation duration:duration];
-    
-    BOOL isInFullScreen =   [[[self topOverlayView].layer
-                              valueForKey:APP_IN_FULL_SCREEN] boolValue];
-    
-    // hide overlay views adjust positions based on orietnation and then
-    // hide them again
-    if (isInFullScreen) {
-        // hide all bars to before rotate
-        self.topOverlayView.hidden = YES;
-        self.bottomOverlayView.hidden = YES;
-    }
-    
-    int connectionsCount = [allConnectionsIds count];
-    UIInterfaceOrientation orientation = toInterfaceOrientation;
-    
-    // adjust overlay views
-    if (orientation == UIInterfaceOrientationPortrait ||
-        orientation == UIInterfaceOrientationPortraitUpsideDown) {
-        
-        [videoContainerView setFrame:
-         CGRectMake(0,
-                    0,
-                    self.view.frame.size.width,
-                    self.view.frame.size.height)];
-        
-        [_publisher.view setFrame:
-         CGRectMake(8,
-                    self.view.frame.size.height -
-                    (isInFullScreen ? PUBLISHER_PREVIEW_HEIGHT + 8 :
-                     (PUBLISHER_BAR_HEIGHT +
-                      (self.archiveOverlay.hidden ? 0 :
-                       ARCHIVE_BAR_HEIGHT) + 8 +
-                      PUBLISHER_PREVIEW_HEIGHT)),
-                    PUBLISHER_PREVIEW_WIDTH,
-                    PUBLISHER_PREVIEW_HEIGHT)];
-        
-        
-        UIView *containerView = self.archiveOverlay.superview;
-        containerView.frame =
-        CGRectMake(0,
-                   self.view.frame.size.height -
-                   PUBLISHER_ARCHIVE_CONTAINER_HEIGHT,
-                   self.view.frame.size.width,
-                   PUBLISHER_ARCHIVE_CONTAINER_HEIGHT);
-        
-        [self.bottomOverlayView removeFromSuperview];
-        [containerView addSubview:self.bottomOverlayView];
-        
-        self.bottomOverlayView.frame =
-        CGRectMake(0,
-                   containerView.frame.size.height - PUBLISHER_BAR_HEIGHT,
-                   containerView.frame.size.width,
-                   PUBLISHER_BAR_HEIGHT);
-        
-        // Archiving overlay
-        self.archiveOverlay.frame =
-        CGRectMake(0,
-                   0,
-                   self.view.frame.size.width,
-                   ARCHIVE_BAR_HEIGHT);
-        
-        self.topOverlayView.frame =
-        CGRectMake(0,
-                   0,
-                   self.view.frame.size.width,
-                   self.topOverlayView.frame.size.height);
-        
-        // Camera button
-        self.cameraToggleButton.frame =
-        CGRectMake(0, 0, 90, PUBLISHER_BAR_HEIGHT);
-        
-        //adjust border layer
-        CALayer *borderLayer = [[self.cameraToggleButton.layer sublayers]
-                                objectAtIndex:1];
-        borderLayer.frame =
-        CGRectMake(-1,
-                   -1,
-                   CGRectGetWidth(self.cameraToggleButton.frame),
-                   CGRectGetHeight(self.cameraToggleButton.frame) + 2);
-        
-        // adjust call button
-        self.endCallButton.frame =
-        CGRectMake((self.bottomOverlayView.frame.size.width / 2) - (140 / 2),
-                   0,
-                   140,
-                   PUBLISHER_BAR_HEIGHT);
-        
-        // Mic button
-        self.audioPubUnpubButton.frame =
-        CGRectMake(self.bottomOverlayView.frame.size.width - 90,
-                   0,
-                   90,
-                   PUBLISHER_BAR_HEIGHT);
-        
-        borderLayer = [[self.audioPubUnpubButton.layer sublayers]
-                       objectAtIndex:1];
-        borderLayer.frame =
-        CGRectMake(-1,
-                   -1,
-                   CGRectGetWidth(self.audioPubUnpubButton.frame) + 5,
-                   CGRectGetHeight(self.audioPubUnpubButton.frame) + 2);
-        
-        
-        
-        [videoContainerView setContentSize:
-         CGSizeMake(videoContainerView.frame.size.width * (connectionsCount ),
-                    videoContainerView.frame.size.height)];
-    }
-    else if (orientation == UIInterfaceOrientationLandscapeLeft ||
-             orientation == UIInterfaceOrientationLandscapeRight) {
-        
-        
-        if (orientation == UIInterfaceOrientationLandscapeRight) {
-            
-            [videoContainerView setFrame:
-             CGRectMake(0,
-                        0,
-                        self.view.frame.size.width,
-                        self.view.frame.size.height)];
-            
-            [_publisher.view setFrame:
-             CGRectMake(8,
-                        self.view.frame.size.height -
-                        ((self.archiveOverlay.hidden ? 0 : ARCHIVE_BAR_HEIGHT)
-                         + 8 + PUBLISHER_PREVIEW_HEIGHT),
-                        PUBLISHER_PREVIEW_WIDTH,
-                        PUBLISHER_PREVIEW_HEIGHT)];
-            
-            UIView *containerView = self.archiveOverlay.superview;
-            containerView.frame =
-            CGRectMake(0,
-                       self.view.frame.size.height - ARCHIVE_BAR_HEIGHT,
-                       self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
-                       ARCHIVE_BAR_HEIGHT);
-            
-            // Archiving overlay
-            self.archiveOverlay.frame =
-            CGRectMake(0,
-                       containerView.frame.size.height - ARCHIVE_BAR_HEIGHT,
-                       containerView.frame.size.width,
-                       ARCHIVE_BAR_HEIGHT);
-            
-            [self.bottomOverlayView removeFromSuperview];
-            [self.view addSubview:self.bottomOverlayView];
-            
-            self.bottomOverlayView.frame =
-            CGRectMake(self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
-                       0,
-                       PUBLISHER_BAR_HEIGHT,
-                       self.view.frame.size.height);
-            
-            // Top overlay
-            self.topOverlayView.frame =
-            CGRectMake(0,
-                       0,
-                       self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
-                       self.topOverlayView.frame.size.height);
-            
-            
-            
-            
-            
-        }
-        else
-        {
-            [videoContainerView setFrame:
-             CGRectMake(0,
-                        0,
-                        self.view.frame.size.width,
-                        self.view.frame.size.height)];
-            
-            [_publisher.view setFrame:
-             CGRectMake(8 + PUBLISHER_BAR_HEIGHT,
-                        self.view.frame.size.height -
-                        ((self.archiveOverlay.hidden ? 0 : ARCHIVE_BAR_HEIGHT)
-                         + 8 + PUBLISHER_PREVIEW_HEIGHT),
-                        PUBLISHER_PREVIEW_WIDTH,
-                        PUBLISHER_PREVIEW_HEIGHT)];
-            
-            
-            UIView *containerView = self.archiveOverlay.superview;
-            containerView.frame =
-            CGRectMake(PUBLISHER_BAR_HEIGHT,
-                       self.view.frame.size.height - ARCHIVE_BAR_HEIGHT,
-                       self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
-                       ARCHIVE_BAR_HEIGHT);
-            
-            [self.bottomOverlayView removeFromSuperview];
-            [self.view addSubview:self.bottomOverlayView];
-            
-            self.bottomOverlayView.frame =
-            CGRectMake(0,
-                       0,
-                       PUBLISHER_BAR_HEIGHT,
-                       self.view.frame.size.height);
-            
-            // Archiving overlay
-            self.archiveOverlay.frame =
-            CGRectMake(0,
-                       containerView.frame.size.height - ARCHIVE_BAR_HEIGHT,
-                       containerView.frame.size.width,
-                       ARCHIVE_BAR_HEIGHT);
-            
-            self.topOverlayView.frame =
-            CGRectMake(PUBLISHER_BAR_HEIGHT,
-                       0,
-                       self.view.frame.size.width - PUBLISHER_BAR_HEIGHT,
-                       self.topOverlayView.frame.size.height);
-            
-            
-        }
-        
-        // Mic button
-        CGRect frame =  self.audioPubUnpubButton.frame;
-        frame.origin.x = 0;
-        frame.origin.y = 0;
-        frame.size.width = PUBLISHER_BAR_HEIGHT;
-        frame.size.height = 90;
-        
-        self.audioPubUnpubButton.frame = frame;
-        
-        // vertical border
-        frame.origin.x = -1;
-        frame.origin.y = -1;
-        frame.size.width = 55;
-        CALayer *borderLayer = [[self.audioPubUnpubButton.layer sublayers]
-                                objectAtIndex:1];
-        borderLayer.frame = frame;
-        
-        // Camera button
-        frame =  self.cameraToggleButton.frame;
-        frame.origin.x = 0;
-        frame.origin.y = self.bottomOverlayView.frame.size.height - 100;
-        frame.size.width = PUBLISHER_BAR_HEIGHT;
-        frame.size.height = 90;
-        
-        self.cameraToggleButton.frame = frame;
-        
-        frame.origin.x = -1;
-        frame.origin.y = 0;
-        frame.size.height = 90;
-        frame.size.width = 55;
-        
-        borderLayer = [[self.cameraToggleButton.layer sublayers]
-                       objectAtIndex:1];
-        borderLayer.frame =
-        CGRectMake(0,
-                   1,
-                   CGRectGetWidth(self.cameraToggleButton.frame),
-                   1
-                   );
-        
-        // call button
-        frame =  self.endCallButton.frame;
-        frame.origin.x = 0;
-        frame.origin.y = (self.bottomOverlayView.frame.size.height / 2) -
-        (100 / 2);
-        frame.size.width = PUBLISHER_BAR_HEIGHT;
-        frame.size.height = 100;
-        
-        self.endCallButton.frame = frame;
-        
-        [videoContainerView setContentSize:
-         CGSizeMake(videoContainerView.frame.size.width * connectionsCount,
-                    videoContainerView.frame.size.height)];
-    }
-    
-    if (isInFullScreen) {
-        
-        // call viewTapped to hide the views out of the screen.
-        [[self topOverlayView].layer setValue:[NSNumber numberWithBool:NO]
-                                       forKey:APP_IN_FULL_SCREEN];
-        [self adjustArchiveStatusImgView];
-        [self viewTapped:nil];
-        [[self topOverlayView].layer setValue:[NSNumber numberWithBool:YES]
-                                       forKey:APP_IN_FULL_SCREEN];
-        
-        self.topOverlayView.hidden = NO;
-        self.bottomOverlayView.hidden = NO;
-    }
-    
-    // re arrange subscribers
-    [self reArrangeSubscribers];
-    
-    // set video container offset to current subscriber
-    [videoContainerView setContentOffset:
-     CGPointMake(_currentSubscriber.view.tag *
-                 videoContainerView.frame.size.width, 0)
-                                animated:YES];
-}
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
@@ -801,6 +383,8 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
 
 - (void)setupSession
 {
+    if(!self.openTokToken)
+        return;
     //setup one time session
     if (_session) {
         _session = nil;
@@ -820,9 +404,6 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     _publisher = [[OTPublisher alloc]
                   initWithDelegate:self
                   name:[[UIDevice currentDevice] name]];
-    
-    //    [self willAnimateRotationToInterfaceOrientation:
-    //     [[UIApplication sharedApplication] statusBarOrientation] duration:1.0];
     
     [self.view addSubview:_publisher.view];
     _publisher.view.userInteractionEnabled = YES;
@@ -852,11 +433,7 @@ static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NTMwNDc2MiZzaWc9OTE5ZWFlYz
     [videoContainerView setContentOffset:
      CGPointMake(_currentSubscriber.view.frame.origin.x, 0) animated:YES];
     
-    
 }
-
-
-
 
 #pragma mark - OpenTok Session
 - (void)session:(OTSession *)session
@@ -874,43 +451,18 @@ connectionCreated:(OTConnection *)connection
 - (void)sessionDidConnect:(OTSession *)session
 {
     // now publish
-    OTError *error = nil;
-    [_session publish:_publisher error:&error];
-    if (error)
-    {
-        [self showAlert:[error localizedDescription]];
-    }
+//    OTError *error = nil;
+//    [_session publish:_publisher error:&error];
+//    if (error)
+//    {
+//        [self showAlert:[error localizedDescription]];
+//    }
+    
+    // create self subscriber
+    [self createSubscriber:self.roomStreamsArray[0]];
 }
 
-- (void)reArrangeSubscribers
-{
-    return;
-    
-    CGFloat containerWidth = CGRectGetWidth(videoContainerView.bounds);
-    CGFloat containerHeight = CGRectGetHeight(videoContainerView.bounds);
-    int count = [allConnectionsIds count];
-    
-    // arrange all subscribers horizontally one by one.
-    for (int i = 0; i < [allConnectionsIds count]; i++)
-    {
-        OTSubscriber *subscriber = [allSubscribers
-                                    valueForKey:[allConnectionsIds
-                                                 objectAtIndex:i]];
-        subscriber.view.tag = i;
-        [subscriber.view setFrame:
-         CGRectMake(i * CGRectGetWidth(videoContainerView.bounds),
-                    0,
-                    containerWidth,
-                    containerHeight)];
-        [videoContainerView addSubview:subscriber.view];
-    }
-    
-    [videoContainerView setContentSize:
-     CGSizeMake(videoContainerView.frame.size.width * (count ),
-                videoContainerView.frame.size.height )];
-    [videoContainerView setContentOffset:
-     CGPointMake(_currentSubscriber.view.frame.origin.x, 0) animated:YES];
-}
+
 
 - (void)sessionDidDisconnect:(OTSession *)session
 {
@@ -955,7 +507,6 @@ connectionCreated:(OTConnection *)connection
     [allConnectionsIds removeObject:stream.connection.connectionId];
     
     _currentSubscriber = nil;
-    [self reArrangeSubscribers];
     
     // show first subscriber
     if ([allConnectionsIds count] > 0) {
@@ -969,33 +520,24 @@ connectionCreated:(OTConnection *)connection
 
 - (void)createSubscriber:(OTStream *)stream
 {
+    // create subscriber
+    OTSubscriber *subscriber = [[OTSubscriber alloc]
+                                initWithStream:stream delegate:self];
     
-    if ([[UIApplication sharedApplication] applicationState] ==
-        UIApplicationStateBackground ||
-        [[UIApplication sharedApplication] applicationState] ==
-        UIApplicationStateInactive)
+    // subscribe now
+    OTError *error = nil;
+    [_session subscribe:subscriber error:&error];
+    if (error)
     {
-        [backgroundConnectedStreams addObject:stream];
-    } else
-    {
-        // create subscriber
-        OTSubscriber *subscriber = [[OTSubscriber alloc]
-                                    initWithStream:stream delegate:self];
-        
-        // subscribe now
-        OTError *error = nil;
-        [_session subscribe:subscriber error:&error];
-        if (error)
-        {
-            [self showAlert:[error localizedDescription]];
-        }
-        
+        [self showAlert:[error localizedDescription]];
     }
 }
 
 - (void)subscriberDidConnectToStream:(OTSubscriberKit *)subscriber
 {
     NSLog(@"subscriberDidConnectToStream %@", subscriber.stream.name);
+    [self requestToHopOnStage:subscriber.stream.name];
+    
     
     // create subscriber
     OTSubscriber *sub = (OTSubscriber *)subscriber;
@@ -1256,16 +798,13 @@ archiveStoppedWithId:(NSString *)archiveId
 
 #pragma mark - Connect to soapbox server
 -(void)connectToSoapBoxServer {
-    NSDictionary *userInfoDto = @{@"room":@1,@"roomName":@"slug1",@"username": self.userInfo.twitterUserName, @"userID": self.userInfo.twitterUserID,@"authToken":self.userInfo.twitterAuthToken,@"authTokenSecret":self.userInfo.twitterAuthTokenSecret, @"platform":@"iOS"};
+    NSDictionary *userInfoDto = @{@"roomName":@"slug1",@"room":@"slug1",@"username": self.userInfo.twitterUserName, @"userID": self.userInfo.twitterUserID,@"authToken":self.userInfo.twitterAuthToken,@"authTokenSecret":self.userInfo.twitterAuthTokenSecret, @"platform":@"iOS"};
     
     [SIOSocket socketWithHost: soapBoxServerUrl response: ^(SIOSocket *socket) {
         NSLog(@"connected");
         self.socket = socket;
         
         __weak typeof(self) weakSelf = self;
-        
-        
-        
         self.socket.onConnect = ^()
         {
             weakSelf.socketIsConnected = YES;
@@ -1277,17 +816,24 @@ archiveStoppedWithId:(NSString *)archiveId
         [self.socket on: @"initiOSUserEmit" callback: ^(SIOParameterArray *args)
          {
              NSLog(@"%@ ARGS",args);
-             self.openTokToken = [args valueForKey:@"opentok_user_token"];
-             //[self setupSession];
-             
-             // Get all the stream ids array
-             self.roomStreamsArray = [args valueForKey:@"roomStreams"];
+             NSDictionary *dto =args[0];
+             self.openTokToken = [dto valueForKey:@"opentok_user_token"];
+             [self.socket on: @"initSBRoomClientEmit" callback: ^(SIOParameterArray *args)
+              {
+                  NSLog(@"%@ ARGS",args);
+                  NSDictionary *dto =args[0];
+                  self.openTokToken = [dto valueForKey:@"opentok_user_token"];
+                  
+                  [self setupSession];
+                  
+                  // Get all the stream ids array
+                  self.roomStreamsArray = [args valueForKey:@"roomStreams"];
+                  
+                  [self setupSession];
+                  
+              }];
              
          }];
-        
-        
-        
-        
         
     }];
     
@@ -1295,7 +841,7 @@ archiveStoppedWithId:(NSString *)archiveId
 
 -(void)requestToHopOnStage:(NSString*)streamId {
     if(self.socketIsConnected) {
-        [self.socket emit: @"requestToHopStageEmit" args: @[streamId]];
+        [self.socket emit: @"requestToHopStageEmit" args: @[@"ahdblakhbalkhf"]];
     }
 }
 
