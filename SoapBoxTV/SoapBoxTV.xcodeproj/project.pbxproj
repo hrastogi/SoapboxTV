@@ -429,6 +429,7 @@
 				6DA858FC1B6E69C50047D2A3 /* Resources */,
 				6DED7FCE1B71D3480008C4D3 /* ShellScript */,
 				0D92AB373F0E35B5CEA5063C /* Copy Pods Resources */,
+				37F07399319FD25F78885D31 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -578,6 +579,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SoapBoxTV/Pods-SoapBoxTV-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		37F07399319FD25F78885D31 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SoapBoxTV/Pods-SoapBoxTV-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6DED7FCE1B71D3480008C4D3 /* ShellScript */ = {
