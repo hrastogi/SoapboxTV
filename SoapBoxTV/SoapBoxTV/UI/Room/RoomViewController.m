@@ -81,7 +81,6 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	            sessionId:kSessionId
 	            delegate:self];
 	[_session connectWithToken:self.openTokToken error:nil];
-	[self setupPublisher];
 
 }
 
@@ -153,14 +152,23 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
         streamCreated:(OTStream *)stream
 {
 	// create self subscriber
-	[self createSubscriber:stream];
+	//[self createSubscriber:stream];
 }
 
-- (void)  session:(OTSession *)mySession
-        streamCreated:(OTStream *)stream
+
+
+- (void)session:(OTSession*)session streamCreated:(OTStream*)stream
 {
-	// create remote subscriber
-	[self createSubscriber:stream];
+	NSLog(@"session streamCreated (%@)", stream.streamId);
+
+	// See the declaration of subscribeToSelf above.
+	if ([stream.connection.connectionId isEqualToString: session.connection.connectionId]) {
+		// This is my own stream
+	} else {
+		// This is a stream from another client.
+		// Get the stream and subscribe to the stream
+		[self createSubscriber:stream];
+	}
 }
 
 - (void)session:(OTSession *)session didFailWithError:(OTError *)error
@@ -218,7 +226,7 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	[_session subscribe:subscriber error:&error];
 	if (error)
 	{
-		//		[self showAlert:[error localizedDescription]];
+		NSLog(@"error %@",error.localizedDescription);
 	}
 }
 
@@ -248,11 +256,7 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	                  [self.socket on: @"initSBRoomClientEmit" callback: ^(SIOParameterArray *args)
 	                   {
 	                           NSLog(@"%@ ARGS",args);
-	                           NSDictionary *dto =args[0];
-	                           self.openTokToken = [dto valueForKey:@"opentok_user_token"];
-
 	                           [self setupSession];
-
 	                           // Get all the stream ids array
 	                           self.roomStreamsArray = [args valueForKey:@"roomStreams"];
 
