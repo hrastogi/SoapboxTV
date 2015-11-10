@@ -11,30 +11,9 @@
 #import <QuartzCore/QuartzCore.h>
 
 @class UserModel,Room;
-@interface RoomViewController : UIViewController <OTSessionDelegate, OTPublisherDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
-
-@property (strong, nonatomic) IBOutlet UIScrollView *videoContainerView;
-@property (strong, nonatomic) IBOutlet UIView *bottomOverlayView;
-@property (strong, nonatomic) IBOutlet UIView *topOverlayView;
-@property (retain, nonatomic) IBOutlet UIButton *cameraToggleButton;
-@property (retain, nonatomic) IBOutlet UIButton *audioPubUnpubButton;
-@property (retain, nonatomic) IBOutlet UILabel *userNameLabel;
-@property (retain, nonatomic) NSTimer *overlayTimer;
-@property (retain, nonatomic) IBOutlet UIButton *audioSubUnsubButton;
-@property (retain, nonatomic) IBOutlet UIButton *endCallButton;
-@property (retain, nonatomic) IBOutlet UIView *micSeparator;
-@property (retain, nonatomic) IBOutlet UIView *cameraSeparator;
-@property (retain, nonatomic) IBOutlet UIView *archiveOverlay;
-@property (retain, nonatomic) IBOutlet UILabel *archiveStatusLbl;
-@property (retain, nonatomic) IBOutlet UIImageView *archiveStatusImgView;
-@property (retain, nonatomic) IBOutlet UIImageView *archiveStatusImgView2;
-
+@interface RoomViewController : UIViewController <OTSessionDelegate, OTPublisherDelegate>
 @property (nonatomic) UserModel *userInfo;
 @property (nonatomic) Room *roomInfo;
 
 
-- (IBAction)toggleAudioSubscribe:(id)sender;
-- (IBAction)toggleCameraPosition:(id)sender;
-- (IBAction)toggleAudioPublish:(id)sender;
-- (IBAction)endCallAction:(UIButton *)button;
 @end
