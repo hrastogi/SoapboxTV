@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Login View Controller-->
@@ -67,10 +68,96 @@
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="CNc-lF-BZg">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y5Z-eA-vve">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="33" id="JF3-qw-zKc"/>
+                                    <constraint firstAttribute="height" constant="33" id="eGp-Fb-1uP"/>
+                                </constraints>
+                                <state key="normal" image="camera-switch_black-33.png"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="JF3-qw-zKc"/>
+                                        <exclude reference="eGp-Fb-1uP"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="JF3-qw-zKc"/>
+                                        <include reference="eGp-Fb-1uP"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="cameraButtonTapped:" destination="sE9-CG-LTi" eventType="touchUpInside" id="4Xp-ci-8GB"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7rv-AW-ukZ">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="COx-Qi-1Pv">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="120"/>
+                                    </constraint>
+                                    <constraint firstAttribute="width" constant="150" id="Jqi-gF-RDE">
+                                        <variation key="heightClass=regular-widthClass=compact" constant="120"/>
+                                    </constraint>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="COx-Qi-1Pv"/>
+                                        <exclude reference="Jqi-gF-RDE"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="COx-Qi-1Pv"/>
+                                        <include reference="Jqi-gF-RDE"/>
+                                    </mask>
+                                </variation>
+                            </view>
+                        </subviews>
                         <animations/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="pGH-cj-ICy" firstAttribute="top" secondItem="y5Z-eA-vve" secondAttribute="bottom" constant="91" id="9Tb-PD-lVC">
+                                <variation key="heightClass=regular-widthClass=compact" constant="59"/>
+                            </constraint>
+                            <constraint firstAttribute="trailingMargin" secondItem="7rv-AW-ukZ" secondAttribute="trailing" constant="-20" id="JDB-SP-WgV"/>
+                            <constraint firstItem="pGH-cj-ICy" firstAttribute="top" secondItem="7rv-AW-ukZ" secondAttribute="bottom" id="h7x-8e-2dW"/>
+                            <constraint firstItem="y5Z-eA-vve" firstAttribute="centerX" secondItem="CNc-lF-BZg" secondAttribute="centerX" id="qVf-Mu-F89"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="y5Z-eA-vve"/>
+                                <exclude reference="7rv-AW-ukZ"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="JDB-SP-WgV"/>
+                                <exclude reference="qVf-Mu-F89"/>
+                                <exclude reference="9Tb-PD-lVC"/>
+                                <exclude reference="h7x-8e-2dW"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="y5Z-eA-vve"/>
+                                <include reference="7rv-AW-ukZ"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="JDB-SP-WgV"/>
+                                <include reference="qVf-Mu-F89"/>
+                                <include reference="9Tb-PD-lVC"/>
+                                <include reference="h7x-8e-2dW"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="znj-Ds-OC8"/>
+                    <connections>
+                        <outlet property="publisherPlaceholderView" destination="7rv-AW-ukZ" id="Bgq-xQ-Ijh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NjR-m1-Rut" sceneMemberID="firstResponder"/>
             </objects>
@@ -97,4 +184,7 @@
             <point key="canvasLocation" x="376.5" y="114"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="camera-switch_black-33.png" width="33" height="33"/>
+    </resources>
 </document>

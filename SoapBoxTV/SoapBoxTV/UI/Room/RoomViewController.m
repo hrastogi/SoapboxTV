@@ -40,11 +40,14 @@ static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 	int _currentSubscriberIndex;
 }
 
+@property (nonatomic,weak) IBOutlet UIView *publisherPlaceholderView;
 @property (nonatomic) SIOSocket *socket;
 @property (nonatomic,assign) BOOL socketIsConnected;
 @property (nonatomic) NSString *openTokToken;
 @property (nonatomic) NSArray *roomStreamsArray;
 @property (nonatomic) NSString *streamId;
+
+-(IBAction)cameraButtonTapped:(id)sender;
 
 @end
 
@@ -138,20 +141,7 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 
 }
 
-- (void)createSubscriber:(OTStream *)stream
-{
-	// create subscriber
-	OTSubscriber *subscriber = [[OTSubscriber alloc]
-	                            initWithStream:stream delegate:self];
 
-	// subscribe now
-	OTError *error = nil;
-	[_session subscribe:subscriber error:&error];
-	if (error)
-	{
-//		[self showAlert:[error localizedDescription]];
-	}
-}
 
 - (void)subscriberDidConnectToStream:(OTSubscriberKit *)subscriber
 {
@@ -199,7 +189,38 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	// Dispose of any resources that can be recreated.
 }
 
+#pragma mark - User Actions
+-(IBAction)cameraButtonTapped:(id)sender {
+	[self createPublisher];
 
+}
+
+-(void)createPublisher {
+	_publisher = [[OTPublisher alloc]
+	              initWithDelegate:self
+	              name:[[UIDevice currentDevice] name]];
+
+	self.view.backgroundColor = [UIColor blackColor];
+	_publisher.view.frame = CGRectMake(0, 0, self.publisherPlaceholderView.frame.size.width, self.publisherPlaceholderView.frame.size.height);
+	[self.publisherPlaceholderView addSubview:_publisher.view];
+	_publisher.view.userInteractionEnabled = YES;
+
+}
+
+- (void)createSubscriber:(OTStream *)stream
+{
+	// create subscriber
+	OTSubscriber *subscriber = [[OTSubscriber alloc]
+	                            initWithStream:stream delegate:self];
+
+	// subscribe now
+	OTError *error = nil;
+	[_session subscribe:subscriber error:&error];
+	if (error)
+	{
+		//		[self showAlert:[error localizedDescription]];
+	}
+}
 
 
 #pragma mark - Connect to soapbox server
