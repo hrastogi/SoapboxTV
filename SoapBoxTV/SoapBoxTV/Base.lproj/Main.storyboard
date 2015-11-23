@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -96,7 +97,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7rv-AW-ukZ">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <animations/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="COx-Qi-1Pv">
                                         <variation key="heightClass=regular-widthClass=compact" constant="120"/>
@@ -135,10 +136,10 @@
                                 <exclude reference="7rv-AW-ukZ"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="JDB-SP-WgV"/>
-                                <exclude reference="qVf-Mu-F89"/>
                                 <exclude reference="9Tb-PD-lVC"/>
                                 <exclude reference="h7x-8e-2dW"/>
+                                <exclude reference="qVf-Mu-F89"/>
+                                <exclude reference="JDB-SP-WgV"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -147,10 +148,10 @@
                                 <include reference="7rv-AW-ukZ"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="JDB-SP-WgV"/>
-                                <include reference="qVf-Mu-F89"/>
                                 <include reference="9Tb-PD-lVC"/>
                                 <include reference="h7x-8e-2dW"/>
+                                <include reference="qVf-Mu-F89"/>
+                                <include reference="JDB-SP-WgV"/>
                             </mask>
                         </variation>
                     </view>

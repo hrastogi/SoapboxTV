@@ -26,7 +26,7 @@ static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 
 
 @interface RoomViewController ()<OTSessionDelegate, OTSubscriberKitDelegate,OTPublisherDelegate>{
-	NSMutableDictionary *allStreams;
+
 	NSMutableDictionary *allSubscribers;
 	NSMutableArray *allConnectionsIds;
 	NSMutableArray *backgroundConnectedStreams;
@@ -46,6 +46,7 @@ static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 @property (nonatomic) NSString *openTokToken;
 @property (nonatomic) NSArray *roomStreamsArray;
 @property (nonatomic) NSString *streamId;
+@property (nonatomic) NSMutableDictionary *allStreams;
 
 -(IBAction)cameraButtonTapped:(id)sender;
 
@@ -64,6 +65,8 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+
+	self.allStreams = [NSMutableDictionary dictionary];
 	[self connectToSoapBoxServer];
 }
 
@@ -167,7 +170,8 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	} else {
 		// This is a stream from another client.
 		// Get the stream and subscribe to the stream
-		[self createSubscriber:stream];
+		[self.allStreams setObject:stream forKey:stream.streamId];
+		//[self createSubscriber: stream];
 	}
 }
 
@@ -224,6 +228,10 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	// subscribe now
 	OTError *error = nil;
 	[_session subscribe:subscriber error:&error];
+	subscriber.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+	[self.view addSubview:subscriber.view];
+
+
 	if (error)
 	{
 		NSLog(@"error %@",error.localizedDescription);
@@ -236,7 +244,6 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	NSDictionary *userInfoDto = @{@"roomName":@"slug1",@"room":@"slug1",@"username": self.userInfo.twitterUserName, @"userID": self.userInfo.twitterUserID,@"authToken":self.userInfo.twitterAuthToken,@"authTokenSecret":self.userInfo.twitterAuthTokenSecret, @"platform":@"iOS"};
 
 	[SIOSocket socketWithHost: soapBoxServerUrl response: ^(SIOSocket *socket) {
-	         NSLog(@"connected");
 	         self.socket = socket;
 
 	         __weak typeof(self) weakSelf = self;
@@ -250,17 +257,27 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 
 	         [self.socket on: @"initiOSUserEmit" callback: ^(SIOParameterArray *args)
 	          {
-	                  NSLog(@"%@ ARGS",args);
+	                  NSLog(@"initiOSUserEmit : %@",args);
 	                  NSDictionary *dto =args[0];
 	                  self.openTokToken = [dto valueForKey:@"opentok_user_token"];
 	                  [self.socket on: @"initSBRoomClientEmit" callback: ^(SIOParameterArray *args)
 	                   {
-	                           NSLog(@"%@ ARGS",args);
+	                           NSLog(@"initSBRoomClientEmit : %@ ",args);
 	                           [self setupSession];
 	                           // Get all the stream ids array
 	                           self.roomStreamsArray = [args valueForKey:@"roomStreams"];
 
 			   }];
+
+	                  [self.socket on: @"makeCamSlotLiveClientEmit" callback: ^(SIOParameterArray *args)
+	                   {
+	                           NSLog(@"initSBRoomClientEmit : %@ ",args);
+
+
+			   }];
+
+
+
 
 		  }];
 
