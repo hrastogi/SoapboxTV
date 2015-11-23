@@ -27,7 +27,7 @@ static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 
 @interface RoomViewController ()<OTSessionDelegate, OTSubscriberKitDelegate,OTPublisherDelegate>{
 
-	NSMutableDictionary *allSubscribers;
+
 	NSMutableArray *allConnectionsIds;
 	NSMutableArray *backgroundConnectedStreams;
 
@@ -41,12 +41,14 @@ static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 }
 
 @property (nonatomic,weak) IBOutlet UIView *publisherPlaceholderView;
+@property (nonatomic,weak) IBOutlet UIView *subscriberPlaceholderView;
 @property (nonatomic) SIOSocket *socket;
 @property (nonatomic,assign) BOOL socketIsConnected;
 @property (nonatomic) NSString *openTokToken;
 @property (nonatomic) NSArray *roomStreamsArray;
 @property (nonatomic) NSString *streamId;
 @property (nonatomic) NSMutableDictionary *allStreams;
+@property (nonatomic) NSMutableDictionary *allSubscribers;
 
 -(IBAction)cameraButtonTapped:(id)sender;
 
@@ -67,6 +69,7 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	[super viewDidLoad];
 
 	self.allStreams = [NSMutableDictionary dictionary];
+	self.allSubscribers = [NSMutableDictionary dictionary];
 	[self connectToSoapBoxServer];
 }
 
@@ -171,7 +174,7 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 		// This is a stream from another client.
 		// Get the stream and subscribe to the stream
 		[self.allStreams setObject:stream forKey:stream.streamId];
-		//[self createSubscriber: stream];
+		[self createSubscriber: stream];
 	}
 }
 
@@ -221,21 +224,20 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 
 - (void)createSubscriber:(OTStream *)stream
 {
-	// create subscriber
-	OTSubscriber *subscriber = [[OTSubscriber alloc]
-	                            initWithStream:stream delegate:self];
+	// If subscriber exists then do not create new subscriber.
+	OTSubscriber *existingSubscriber = [self.allSubscribers objectForKey:stream.streamId];
 
-	// subscribe now
-	OTError *error = nil;
-	[_session subscribe:subscriber error:&error];
-	subscriber.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-	[self.view addSubview:subscriber.view];
+	// If subscriber does not exists then create new subscriber
+	if(!existingSubscriber) {
+		// create subscriber
+		OTSubscriber *subscriber = [[OTSubscriber alloc]
+		                            initWithStream:stream delegate:self];
 
 
-	if (error)
-	{
-		NSLog(@"error %@",error.localizedDescription);
+		[self.allSubscribers setObject:subscriber forKey:stream.streamId];
+
 	}
+
 }
 
 
@@ -243,16 +245,15 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 -(void)connectToSoapBoxServer {
 	NSDictionary *userInfoDto = @{@"roomName":@"slug1",@"room":@"slug1",@"username": self.userInfo.twitterUserName, @"userID": self.userInfo.twitterUserID,@"authToken":self.userInfo.twitterAuthToken,@"authTokenSecret":self.userInfo.twitterAuthTokenSecret, @"platform":@"iOS"};
 
-	[SIOSocket socketWithHost: soapBoxServerUrl response: ^(SIOSocket *socket) {
+	[SIOSocket socketWithHost: soapBoxServerUrl response: ^(SIOSocket *socket)
+	 {
 	         self.socket = socket;
-
 	         __weak typeof(self) weakSelf = self;
 	         self.socket.onConnect = ^()
 	         {
 	                 weakSelf.socketIsConnected = YES;
 	                 // Broadcast new location
 	                 [weakSelf.socket emit: @"register" args: @[userInfoDto]];
-
 		 };
 
 	         [self.socket on: @"initiOSUserEmit" callback: ^(SIOParameterArray *args)
@@ -260,6 +261,7 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	                  NSLog(@"initiOSUserEmit : %@",args);
 	                  NSDictionary *dto =args[0];
 	                  self.openTokToken = [dto valueForKey:@"opentok_user_token"];
+
 	                  [self.socket on: @"initSBRoomClientEmit" callback: ^(SIOParameterArray *args)
 	                   {
 	                           NSLog(@"initSBRoomClientEmit : %@ ",args);
@@ -271,7 +273,11 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 
 	                  [self.socket on: @"makeCamSlotLiveClientEmit" callback: ^(SIOParameterArray *args)
 	                   {
-	                           NSLog(@"initSBRoomClientEmit : %@ ",args);
+	                           NSLog(@"makeCamSlotLiveClientEmit : %@ ",args);
+	                           NSDictionary *camSlotInfoDto = args[0];
+	                           NSString *streamId = [camSlotInfoDto objectForKey:@"streamID"];
+	                           [self makeSubscriberLive:streamId];
+
 
 
 			   }];
@@ -291,4 +297,21 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	}
 }
 
+-(void) makeSubscriberLive:(NSString*)streamId {
+	OTError *error = nil;
+	OTSubscriber *subscriber = [self.allSubscribers objectForKey:streamId];
+	[_session subscribe:subscriber error:&error];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // code here
+        subscriber.view.frame = CGRectMake(0, 0, self.subscriberPlaceholderView.frame.size.width, self.subscriberPlaceholderView.frame.size.height);
+        [self.subscriberPlaceholderView addSubview:subscriber.view];
+    });
+	
+
+
+	if (error)
+	{
+		NSLog(@"error %@",error.localizedDescription);
+	}
+}
 @end

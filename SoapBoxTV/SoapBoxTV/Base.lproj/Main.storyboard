@@ -70,6 +70,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qsg-Ff-YEU">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y5Z-eA-vve">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <animations/>
@@ -123,41 +128,56 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Qsg-Ff-YEU" firstAttribute="height" secondItem="CNc-lF-BZg" secondAttribute="height" id="4Xo-n8-q5g"/>
                             <constraint firstItem="pGH-cj-ICy" firstAttribute="top" secondItem="y5Z-eA-vve" secondAttribute="bottom" constant="91" id="9Tb-PD-lVC">
                                 <variation key="heightClass=regular-widthClass=compact" constant="59"/>
                             </constraint>
                             <constraint firstAttribute="trailingMargin" secondItem="7rv-AW-ukZ" secondAttribute="trailing" constant="-20" id="JDB-SP-WgV"/>
+                            <constraint firstItem="Qsg-Ff-YEU" firstAttribute="leading" secondItem="CNc-lF-BZg" secondAttribute="leadingMargin" constant="-20" id="JOu-hb-QLk"/>
+                            <constraint firstItem="Qsg-Ff-YEU" firstAttribute="top" secondItem="4qi-u1-57K" secondAttribute="bottom" constant="-20" id="gOC-yr-GKO"/>
                             <constraint firstItem="pGH-cj-ICy" firstAttribute="top" secondItem="7rv-AW-ukZ" secondAttribute="bottom" id="h7x-8e-2dW"/>
+                            <constraint firstItem="Qsg-Ff-YEU" firstAttribute="width" secondItem="CNc-lF-BZg" secondAttribute="width" id="l3P-zp-LhP"/>
                             <constraint firstItem="y5Z-eA-vve" firstAttribute="centerX" secondItem="CNc-lF-BZg" secondAttribute="centerX" id="qVf-Mu-F89"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
+                                <exclude reference="Qsg-Ff-YEU"/>
                                 <exclude reference="y5Z-eA-vve"/>
                                 <exclude reference="7rv-AW-ukZ"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="9Tb-PD-lVC"/>
-                                <exclude reference="h7x-8e-2dW"/>
+                                <exclude reference="4Xo-n8-q5g"/>
+                                <exclude reference="JOu-hb-QLk"/>
+                                <exclude reference="gOC-yr-GKO"/>
+                                <exclude reference="l3P-zp-LhP"/>
                                 <exclude reference="qVf-Mu-F89"/>
                                 <exclude reference="JDB-SP-WgV"/>
+                                <exclude reference="9Tb-PD-lVC"/>
+                                <exclude reference="h7x-8e-2dW"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
+                                <include reference="Qsg-Ff-YEU"/>
                                 <include reference="y5Z-eA-vve"/>
                                 <include reference="7rv-AW-ukZ"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="9Tb-PD-lVC"/>
-                                <include reference="h7x-8e-2dW"/>
+                                <include reference="4Xo-n8-q5g"/>
+                                <include reference="JOu-hb-QLk"/>
+                                <include reference="gOC-yr-GKO"/>
+                                <include reference="l3P-zp-LhP"/>
                                 <include reference="qVf-Mu-F89"/>
                                 <include reference="JDB-SP-WgV"/>
+                                <include reference="9Tb-PD-lVC"/>
+                                <include reference="h7x-8e-2dW"/>
                             </mask>
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" id="znj-Ds-OC8"/>
                     <connections>
                         <outlet property="publisherPlaceholderView" destination="7rv-AW-ukZ" id="Bgq-xQ-Ijh"/>
+                        <outlet property="subscriberPlaceholderView" destination="Qsg-Ff-YEU" id="bKX-1z-f37"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NjR-m1-Rut" sceneMemberID="firstResponder"/>
