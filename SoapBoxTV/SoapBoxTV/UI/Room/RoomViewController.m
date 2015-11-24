@@ -118,13 +118,7 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 
 - (void)sessionDidConnect:(OTSession *)session
 {
-	// now publish
-    OTError *error = nil;
-    [_session publish:_publisher error:&error];
-    if (error)
-    {
-        [self showAlert:[error localizedDescription]];
-    }
+
 
 }
 
@@ -157,8 +151,8 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 - (void)publisher:(OTPublisherKit *)publisher
         streamCreated:(OTStream *)stream
 {
-	// create self subscriber
-	//[self createSubscriber:stream];
+	NSLog(@"Publisher stream created");
+	[self requestToHopOnStage:stream.streamId];
 }
 
 
@@ -208,6 +202,7 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 -(IBAction)cameraButtonTapped:(id)sender {
 	[self createPublisher];
 
+
 }
 
 -(void)createPublisher {
@@ -219,6 +214,13 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	_publisher.view.frame = CGRectMake(0, 0, self.publisherPlaceholderView.frame.size.width, self.publisherPlaceholderView.frame.size.height);
 	[self.publisherPlaceholderView addSubview:_publisher.view];
 	_publisher.view.userInteractionEnabled = YES;
+
+	OTError *error = nil;
+	[_session publish:_publisher error:&error];
+//	if (error)
+//	{
+//		[self showAlert:[error localizedDescription]];
+//	}
 
 }
 
@@ -296,8 +298,11 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 }
 
 -(void)requestToHopOnStage:(NSString*)streamId {
+
+
+
 	if(self.socketIsConnected) {
-		[self.socket emit: @"requestToHopStageEmit" args: @[@"ahdblakhbalkhf"]];
+		[self.socket emit: @"requestToHopStageEmit" args: @[streamId]];
 	}
 }
 
