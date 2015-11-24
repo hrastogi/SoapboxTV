@@ -76,18 +76,18 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 
 - (void)setupSession
 {
-	if(!self.openTokToken)
-		return;
-	//setup one time session
-	if (_session) {
-		_session = nil;
+	if(self.openTokToken) {
+		//setup one time session
+		if (_session) {
+			_session = nil;
+		}
+
+		_session = [[OTSession alloc] initWithApiKey:kApiKey
+		            sessionId:kSessionId
+		            delegate:self];
+		[_session connectWithToken:self.openTokToken error:nil];
+
 	}
-
-	_session = [[OTSession alloc] initWithApiKey:kApiKey
-	            sessionId:kSessionId
-	            delegate:self];
-	[_session connectWithToken:self.openTokToken error:nil];
-
 }
 
 - (void)setupPublisher
@@ -119,12 +119,12 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 - (void)sessionDidConnect:(OTSession *)session
 {
 	// now publish
-//    OTError *error = nil;
-//    [_session publish:_publisher error:&error];
-//    if (error)
-//    {
-//        [self showAlert:[error localizedDescription]];
-//    }
+    OTError *error = nil;
+    [_session publish:_publisher error:&error];
+    if (error)
+    {
+        [self showAlert:[error localizedDescription]];
+    }
 
 }
 
@@ -265,6 +265,10 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	                  [self.socket on: @"initSBRoomClientEmit" callback: ^(SIOParameterArray *args)
 	                   {
 	                           NSLog(@"initSBRoomClientEmit : %@ ",args);
+	                           NSDictionary *roomInfoDto = args[0];
+	                           NSDictionary *roomStreams = roomInfoDto[@"roomStreams"];
+	                           NSString *streamId = roomStreams[@"videoStreamSlotA"];
+
 	                           [self setupSession];
 	                           // Get all the stream ids array
 	                           self.roomStreamsArray = [args valueForKey:@"roomStreams"];
@@ -301,12 +305,12 @@ static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVL
 	OTError *error = nil;
 	OTSubscriber *subscriber = [self.allSubscribers objectForKey:streamId];
 	[_session subscribe:subscriber error:&error];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // code here
-        subscriber.view.frame = CGRectMake(0, 0, self.subscriberPlaceholderView.frame.size.width, self.subscriberPlaceholderView.frame.size.height);
-        [self.subscriberPlaceholderView addSubview:subscriber.view];
-    });
-	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		// code here
+		subscriber.view.frame = CGRectMake(0, 0, self.subscriberPlaceholderView.frame.size.width, self.subscriberPlaceholderView.frame.size.height);
+		[self.subscriberPlaceholderView addSubview:subscriber.view];
+	});
+
 
 
 	if (error)
