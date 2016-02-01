@@ -13,8 +13,9 @@
 #import <SIOSocket/SIOSocket.h>
 #import <TwitterKit/TwitterKit.h>
 @interface LoginViewController ()
-@property (nonatomic) SIOSocket *socket;
-@property (nonatomic,assign) BOOL socketIsConnected;
+@property (nonatomic, weak) IBOutlet UIView *loginView;
+@property (nonatomic, weak) IBOutlet UIView *twitterButtonView;
+
 @end
 
 @implementation LoginViewController
@@ -54,8 +55,12 @@
             NSLog(@"Unable to connect to Twiiter");
         }
     }];
-    logInButton.center = self.view.center;
-    [self.view addSubview:logInButton];
+
+    logInButton.frame = CGRectMake(logInButton.frame.origin.x, logInButton.frame.origin.y, self.twitterButtonView.frame.size.width, self.twitterButtonView.frame.size.height);
+    logInButton.layer.cornerRadius = 20.0f;
+    logInButton.layer.masksToBounds = YES;
+    
+    [self.twitterButtonView addSubview:logInButton];
 }
 
 #pragma mark - User Actions

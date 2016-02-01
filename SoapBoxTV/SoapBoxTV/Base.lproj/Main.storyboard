@@ -28,13 +28,10 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iH7-PP-2EO">
-                                        <rect key="frame" x="13" y="116" width="244" height="51"/>
-                                        <color key="backgroundColor" red="0.22237354640000306" green="0.88973501045089332" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        <state key="normal" title="Twitter Button">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                    </button>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qdu-zq-cqv">
+                                        <rect key="frame" x="15" y="127" width="240" height="46"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -50,6 +47,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="XrQ-Tl-8dC"/>
+                    <connections>
+                        <outlet property="twitterButtonView" destination="qdu-zq-cqv" id="73j-Rx-1cp"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
