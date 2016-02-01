@@ -11,8 +11,6 @@
 #import <OpenTok/OpenTok.h>
 #import "Room.h"
 
-
-#define APP_IN_FULL_SCREEN @"appInFullScreenMode"
 #define PUBLISHER_BAR_HEIGHT 50.0f
 #define SUBSCRIBER_BAR_HEIGHT 66.0f
 #define ARCHIVE_BAR_HEIGHT 35.0f
@@ -55,10 +53,6 @@ static NSString *soapBoxServerUrl = @"http://52.27.116.102:7273";
 @end
 
 @implementation RoomViewController
-
-// *** Fill the following variables using your own Project info  ***
-// ***          https://dashboard.tokbox.com/projects            ***
-// Replace with your OpenTok API key
 static NSString* const kApiKey = @"45194852";
 // Replace with your generated session ID
 static NSString* const kSessionId = @"2_MX40NTE5NDg1Mn5-MTQzMjI0NDk4MTk3OX45QnVLbVNKTnFPbVp5UVdUK3lqNXlHSW5-fg";
