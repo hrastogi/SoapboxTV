@@ -2,7 +2,7 @@
 # platform :ios, '6.0'
 
 target 'SoapBoxTV' do
-pod 'AFNetworking'
+pod 'AFNetworking','2.6.2'
 pod 'OpenTok'
 pod 'SIOSocket', '~> 0.2.0'
 end

@@ -20,17 +20,17 @@ PODS:
   - AFNetworking/UIKit (2.6.2):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - OpenTok (2.6.1)
+  - OpenTok (2.7.0)
   - SIOSocket (0.2.0)
 
 DEPENDENCIES:
-  - AFNetworking
+  - AFNetworking (= 2.6.2)
   - OpenTok
   - SIOSocket (~> 0.2.0)
 
 SPEC CHECKSUMS:
   AFNetworking: 7f317038a9710cabfa43ec56396b307b45df72ab
-  OpenTok: 6c094ee06dc954a4327c0a736f494f0eaf35c48c
+  OpenTok: 56dbc82766bd925d7b19c4b4468534014eace65d
   SIOSocket: 2facc0bd02ae72d98c223634a46dd8ebdf9be321
 
 COCOAPODS: 0.39.0

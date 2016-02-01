@@ -40,6 +40,7 @@
 		6D4EB7341BAFD74300E3B2B5 /* Subscriber-Speaker-Mute-35@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D4EB7141BAFD74300E3B2B5 /* Subscriber-Speaker-Mute-35@2x.png */; };
 		6D4EB7351BAFD74300E3B2B5 /* TB Bug-30.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D4EB7151BAFD74300E3B2B5 /* TB Bug-30.png */; };
 		6D4EB7361BAFD74300E3B2B5 /* TB Bug-30@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D4EB7161BAFD74300E3B2B5 /* TB Bug-30@2x.png */; };
+		6D6E81851C5F39EA0025099D /* images in Resources */ = {isa = PBXBuildFile; fileRef = 6D6E81841C5F39EA0025099D /* images */; };
 		6D82EA771B8A8F58007EE2D6 /* LobbyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D82EA701B8A8F58007EE2D6 /* LobbyTableViewController.m */; };
 		6D82EA781B8A8F58007EE2D6 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D82EA731B8A8F58007EE2D6 /* LoginViewController.m */; };
 		6D8631831BBE41A9002234D8 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D8631821BBE41A9002234D8 /* UserModel.m */; };
@@ -120,6 +121,7 @@
 		6D4EB7141BAFD74300E3B2B5 /* Subscriber-Speaker-Mute-35@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Subscriber-Speaker-Mute-35@2x.png"; sourceTree = "<group>"; };
 		6D4EB7151BAFD74300E3B2B5 /* TB Bug-30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TB Bug-30.png"; sourceTree = "<group>"; };
 		6D4EB7161BAFD74300E3B2B5 /* TB Bug-30@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TB Bug-30@2x.png"; sourceTree = "<group>"; };
+		6D6E81841C5F39EA0025099D /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
 		6D82EA6F1B8A8F58007EE2D6 /* LobbyTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LobbyTableViewController.h; sourceTree = "<group>"; };
 		6D82EA701B8A8F58007EE2D6 /* LobbyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LobbyTableViewController.m; sourceTree = "<group>"; };
 		6D82EA721B8A8F58007EE2D6 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 		6DA859001B6E69C50047D2A3 /* SoapBoxTV */ = {
 			isa = PBXGroup;
 			children = (
+				6D6E81841C5F39EA0025099D /* images */,
 				6D82EA6D1B8A8F58007EE2D6 /* UI */,
 				6DDAA93A1B8A6CDB003DFD22 /* Store */,
 				6DDAA9321B893C98003DFD22 /* Models */,
@@ -513,6 +516,7 @@
 				6D4EB72A1BAFD74300E3B2B5 /* icon_arrowRight_enabled-28@2x.png in Resources */,
 				6D4EB7211BAFD74300E3B2B5 /* camera_switch-33.png in Resources */,
 				6DD7498F1BA4AC84003681E3 /* LobbyTableViewCell.xib in Resources */,
+				6D6E81851C5F39EA0025099D /* images in Resources */,
 				6D4EB7171BAFD74300E3B2B5 /* archiving-off-15@2x.png in Resources */,
 				6D4EB72F1BAFD74300E3B2B5 /* mic_receiving_data-35.png in Resources */,
 				6D4EB7191BAFD74300E3B2B5 /* archiving_on-5@2x.png in Resources */,
