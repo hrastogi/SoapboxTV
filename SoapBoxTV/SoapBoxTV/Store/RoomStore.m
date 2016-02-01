@@ -9,7 +9,7 @@
 #import "AFNetworking.h"
 #import "RoomStore.h"
 #import "RoomAssembler.h"
-static NSString * const BaseURLString = @"http://54.68.226.173:7131/api/rooms";
+static NSString * const BaseURLString = @"https://soapbox.tv/api/rooms";
 @implementation RoomStore
 +(RoomStore*)sharedInstance
 {
